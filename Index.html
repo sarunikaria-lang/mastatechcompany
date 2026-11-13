@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0F4C5C" />
+<title>MASTATECH — Where Businesses Connect, Learn & Grow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!--
+  ====================================================================
+  MASTATECH — SINGLE-FILE APPLICATION (v4)
+  ====================================================================
+  ADMIN
+    Email:    sarunikaria@gmail.com
+    Password: Samkaria123#
+    Full access to all courses, plans, products — no payment required.
+
+  NEW IN v4
+    - Admin bypass: instant access to everything
+    - Payment receipts: print-to-PDF for any APPROVED order
+    - Referral program: KES 200 per successful referral
+    - All prices displayed in KES (Kenyan Shillings)
+
+  PDF DOCUMENTS
+    - Browser-native print → Save as PDF
+    - Member Record (admin only, per user)
+    - Member Register (admin only, full list)
+    - Payment Receipt (approved orders only)
+
+  SECURITY NOTE
+    - Passwords in localStorage. PROTOTYPE ONLY.
+    - Move auth server-side before public launch.
+  ====================================================================
+-->
+<style>
+  :root {
+    --brand: #0F4C5C; --brand-light: #1B6B7E; --brand-dark: #0A3540;
+    --accent: #F4A261; --accent-dark: #E08B47;
+    --bg: #FAFAF7; --ink: #1F2937; --muted: #6B7280; --line: #E5E7EB;
+    --ok: #10B981; --warn: #F59E0B; --danger: #EF4444;
+    --card: #FFFFFF; --radius: 14px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+    --kcb: #005A2B; --gold: #B8860B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  img { display: block; max-width: 100%; height: auto; }
+  h1,h2,h3,h4 { font-family: 'Sora', sans-serif; line-height: 1.2; color: var(--brand-dark); }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input,textarea,select { font: inherit; width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); font-size: 16px; }
+  input:focus,textarea:focus,select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15,76,92,.12); }
+  textarea { min-height: 100px; resize: vertical; }
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 640px) { .container { padding: 0 24px; } }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; transition: all .15s; white-space: nowrap; min-height: 44px; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-light); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { background: var(--accent-dark); }
+  .btn-kcb { background: var(--kcb); color: #fff; }
+  .btn-kcb:hover { background: #004420; }
+  .btn-admin { background: linear-gradient(135deg, #991B1B, #DC2626); color: #fff; }
+  .btn-admin:hover { background: #991B1B; }
+  .btn-outline { border: 1px solid var(--line); background: #fff; color: var(--ink); }
+  .btn-outline:hover { border-color: var(--brand); color: var(--brand); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger-outline { border: 1px solid var(--danger); background: #fff; color: var(--danger); }
+  .btn-danger-outline:hover { background: #FEF2F2; }
+  .btn-ghost { color: var(--brand); padding: 8px 12px; }
+  .btn-ghost:hover { background: rgba(15,76,92,.06); }
+  .btn-sm { padding: 9px 14px; font-size: 13px; min-height: 36px; }
+  .btn-xs { padding: 6px 10px; font-size: 12px; min-height: 30px; }
+  .btn-block { width: 100%; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .card-hover { transition: all .2s; cursor: pointer; }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.08); border-color: var(--brand); }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.5; background: #EEF2F5; color: var(--muted); white-space: nowrap; }
+  .badge-ok { background: #D1FAE5; color: #065F46; }
+  .badge-warn { background: #FEF3C7; color: #92400E; }
+  .badge-info { background: #DBEAFE; color: #1E40AF; }
+  .badge-demo { background: #FEF2F2; color: #991B1B; border: 1px dashed #FCA5A5; }
+  .badge-accent { background: rgba(244,162,97,.15); color: var(--accent-dark); }
+  .badge-admin { background: linear-gradient(135deg, #991B1B, #DC2626); color: #fff; }
+  .badge-gold { background: linear-gradient(135deg, #B8860B, #DAA520); color: #fff; }
+
+  header.nav { position: sticky; top: 0; z-index: 40; background: #fff; border-bottom: 1px solid var(--line); backdrop-filter: blur(8px); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; gap: 12px; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: 'Sora'; font-weight: 800; font-size: 18px; color: var(--brand-dark); flex-shrink: 0; }
+  .logo-mark { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--brand), var(--accent)); display: grid; place-items: center; color: #fff; font-family: 'Sora'; font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; gap: 2px; flex-wrap: wrap; align-items: center; }
+  .nav-links a { padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--muted); transition: all .15s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--brand); background: rgba(15,76,92,.06); }
+  .nav-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .icon-btn { position: relative; padding: 10px; border-radius: 8px; font-size: 18px; line-height: 1; }
+  .icon-btn:hover { background: rgba(15,76,92,.06); }
+  .icon-btn .dot { position: absolute; top: 2px; right: 2px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--danger); color: #fff; font-size: 10px; font-weight: 700; display: grid; place-items: center; padding: 0 4px; }
+  .mobile-menu-btn { display: none; font-size: 24px; color: var(--brand); padding: 8px 10px; }
+  @media (max-width: 900px) {
+    .nav-links { display: none; width: 100%; flex-direction: column; align-items: stretch; padding-top: 8px; border-top: 1px solid var(--line); margin-top: 8px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { padding: 12px 14px; font-size: 15px; }
+    .mobile-menu-btn { display: block; }
+  }
+
+  .hero { position: relative; overflow: hidden; padding: 80px 0; color: #fff; background-color: var(--brand-dark); }
+  .hero-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; opacity: .35; }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,53,64,.85) 0%, rgba(15,76,92,.75) 100%); }
+  .hero > .container { position: relative; z-index: 1; }
+  .hero h1 { font-size: clamp(28px, 5.5vw, 54px); color: #fff; max-width: 780px; margin-bottom: 20px; }
+  .hero p { color: #D5E5EB; font-size: clamp(15px, 2vw, 18px); max-width: 640px; margin-bottom: 32px; }
+  .hero .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .hero { padding: 48px 0; } }
+
+  section { padding: 56px 0; }
+  @media (min-width: 768px) { section { padding: 72px 0; } }
+  section.compact { padding: 32px 0; }
+  @media (min-width: 768px) { section.compact { padding: 44px 0; } }
+  .section-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
+  .section-head h2 { font-size: clamp(22px, 3vw, 30px); }
+  .section-head p { color: var(--muted); margin-top: 6px; }
+  .eyebrow { color: var(--accent-dark); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+  .grid { display: grid; gap: 16px; }
+  @media (min-width: 640px) { .grid { gap: 20px; } }
+  .grid-2 { grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+  .grid-3 { grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+  .grid-4 { grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px) { .grid-4 { grid-template-columns: repeat(4, 1fr); } }
+
+  .feature-card { padding: 22px; background: #fff; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); transition: all .2s; cursor: pointer; }
+  .feature-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+  .feature-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(15,76,92,.1); color: var(--brand); display: grid; place-items: center; margin-bottom: 14px; font-size: 20px; }
+  .feature-card h3 { font-size: 16px; margin-bottom: 6px; }
+  .feature-card p { font-size: 14px; color: var(--muted); }
+
+  .img-cover { width: 100%; border-radius: 10px; object-fit: cover; background: linear-gradient(135deg, #EEF2F5, #E2E8F0); }
+  .img-card { height: 160px; margin-bottom: 12px; }
+
+  .item-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); flex-wrap: wrap; margin: 6px 0; }
+  .item-title { font-family: 'Sora'; font-weight: 700; font-size: 16px; color: var(--brand-dark); margin-bottom: 6px; line-height: 1.35; }
+  .item-desc { font-size: 14px; color: #4B5563; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; padding: 16px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); }
+  .filters > * { flex: 1 1 160px; min-width: 0; }
+  .filters .btn { flex: 0 0 auto; }
+
+  .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
+  .empty h3 { color: var(--muted); margin-bottom: 8px; font-size: 16px; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .form-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .form-error { color: var(--danger); font-size: 13px; margin-top: 6px; }
+  .auth-shell { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 24px 16px; background: linear-gradient(135deg, #F0F9FB, #FAFAF7); }
+  .auth-card { width: 100%; max-width: 480px; }
+  .auth-card h2 { margin-bottom: 6px; font-size: 24px; }
+  .auth-card .sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+  @media (min-width: 768px) { .stat-row { grid-template-columns: repeat(4, 1fr); } }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .stat .label { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .stat .value { font-family: 'Sora'; font-size: 22px; font-weight: 700; color: var(--brand-dark); margin-top: 4px; word-break: break-word; }
+  @media (min-width: 768px) { .stat .value { font-size: 26px; } }
+
+  .dash-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 900px) { .dash-grid { grid-template-columns: 240px 1fr; gap: 24px; } .dash-side { position: sticky; top: 80px; height: fit-content; } }
+  .dash-side { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }
+  .dash-side button { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; color: var(--muted); font-size: 14px; font-weight: 500; width: 100%; text-align: left; transition: all .15s; }
+  .dash-side button:hover { background: rgba(15,76,92,.06); color: var(--brand); }
+  .dash-side button.active { background: var(--brand); color: #fff; }
+
+  .pricing-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 640px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .pricing-grid { grid-template-columns: repeat(4, 1fr); } }
+  .plan-card { position: relative; display: flex; flex-direction: column; padding: 24px; }
+  .plan-card.featured { border: 2px solid var(--brand); }
+  @media (min-width: 1024px) { .plan-card.featured { transform: scale(1.03); } }
+  .plan-card .plan-name { font-family: 'Sora'; font-weight: 700; font-size: 17px; }
+  .plan-card .plan-price { font-family: 'Sora'; font-weight: 800; font-size: 30px; margin: 10px 0 4px; color: var(--brand-dark); }
+  .plan-card .plan-price span { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .plan-card ul { list-style: none; margin: 16px 0; flex: 1; }
+  .plan-card ul li { display: flex; gap: 8px; font-size: 14px; padding: 6px 0; color: #4B5563; }
+  .plan-card ul li::before { content: '✓'; color: var(--ok); font-weight: 700; flex-shrink: 0; }
+  .ribbon { position: absolute; top: -10px; right: 16px; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+
+  footer { background: var(--brand-dark); color: #C9D8DE; padding: 48px 0 20px; }
+  footer h4 { color: #fff; font-size: 13px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: .08em; }
+  footer a { display: block; padding: 4px 0; font-size: 14px; color: #C9D8DE; }
+  footer a:hover { color: var(--accent); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,.1); margin-top: 32px; padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 13px; }
+
+  #toast-wrap { position: fixed; bottom: 16px; right: 16px; left: 16px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; }
+  @media (min-width: 640px) { #toast-wrap { left: auto; max-width: 380px; } }
+  .toast { background: var(--ink); color: #fff; padding: 13px 18px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,.2); font-size: 14px; font-weight: 500; animation: slideIn .25s ease; pointer-events: auto; }
+  .toast.ok { background: var(--ok); }
+  .toast.err { background: var(--danger); }
+  .toast.kcb { background: var(--kcb); }
+  .toast.gold { background: var(--gold); }
+  @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .cart-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  @media (min-width: 640px) { .cart-row { grid-template-columns: 1fr auto auto; } }
+
+  .demo-notice { background: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 500; margin-bottom: 16px; }
+  .info-notice { background: #F0F9FB; border: 1px solid #A5D6E0; color: var(--brand); padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
+  .warn-notice { background: #FEF3C7; border: 1px solid #F59E0B; color: #92400E; padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
+  .admin-notice { background: linear-gradient(135deg, #FEE2E2, #FECACA); border: 1px solid #DC2626; color: #7F1D1D; padding: 12px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+  .gold-notice { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border: 1px solid #D97706; color: #78350F; padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
+
+  .kcb-box { background: linear-gradient(135deg, #005A2B, #004420); color: #fff; border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+  .kcb-box h3 { color: #fff; margin-bottom: 4px; font-size: 15px; }
+  .kcb-box .acc { font-family: 'Sora'; font-weight: 800; font-size: clamp(20px, 5vw, 28px); letter-spacing: .04em; margin: 8px 0; word-break: break-all; }
+  .kcb-box .row { display: flex; justify-content: space-between; font-size: 13px; opacity: .9; padding: 4px 0; gap: 8px; }
+
+  .video-box { aspect-ratio: 16/9; background: var(--brand-dark); border-radius: var(--radius); display: grid; place-items: center; color: #fff; font-family: 'Sora'; position: relative; overflow: hidden; }
+  .video-box img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+  .video-box .play { position: relative; z-index: 1; width: 64px; height: 64px; border-radius: 50%; background: rgba(244,162,97,.9); display: grid; place-items: center; font-size: 22px; padding-left: 4px; }
+
+  .chat-layout { display: grid; grid-template-columns: 1fr; gap: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); height: auto; }
+  @media (min-width: 900px) { .chat-layout { grid-template-columns: 300px 1fr; height: 640px; } }
+  .chat-list { border-right: none; overflow-y: auto; background: #FAFBFC; max-height: 260px; }
+  @media (min-width: 900px) { .chat-list { border-right: 1px solid var(--line); max-height: none; } }
+  .chat-list-head { padding: 14px; border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 2; }
+  .chat-list-head h3 { font-size: 15px; margin-bottom: 10px; }
+  .chat-conv { display: flex; gap: 12px; padding: 12px 14px; cursor: pointer; border-bottom: 1px solid var(--line); transition: background .15s; }
+  .chat-conv:hover { background: #fff; }
+  .chat-conv.active { background: #fff; border-left: 3px solid var(--brand); padding-left: 11px; }
+  .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--brand-light)); color: #fff; display: grid; place-items: center; font-family: 'Sora'; font-weight: 700; font-size: 15px; flex-shrink: 0; overflow: hidden; }
+  .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .chat-avatar.admin { background: linear-gradient(135deg, #991B1B, #DC2626); }
+  .chat-avatar.owner { background: linear-gradient(135deg, #B45309, #F59E0B); }
+  .chat-avatar.instructor { background: linear-gradient(135deg, #4C1D95, #7C3AED); }
+  .chat-conv-body { flex: 1; min-width: 0; }
+  .chat-conv-name { font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .chat-conv-name .role-tag { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 999px; background: #EEF2F5; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .chat-conv-name .role-tag.admin { background: #FEE2E2; color: #991B1B; }
+  .chat-conv-name .role-tag.owner { background: #FEF3C7; color: #92400E; }
+  .chat-conv-name .role-tag.instructor { background: #EDE9FE; color: #5B21B6; }
+  .chat-conv-preview { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+  .chat-unread { background: var(--danger); color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; margin-left: 6px; }
+  .chat-main { display: flex; flex-direction: column; overflow: hidden; height: 520px; }
+  @media (min-width: 900px) { .chat-main { height: auto; } }
+  .chat-main-head { padding: 12px 16px; border-bottom: 1px solid var(--line); background: #fff; display: flex; align-items: center; gap: 12px; }
+  .chat-main-head .name { font-weight: 700; font-family: 'Sora'; font-size: 15px; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 16px; background: #F7FAFB; display: flex; flex-direction: column; gap: 10px; }
+  .chat-msg { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.45; word-wrap: break-word; }
+  .chat-msg.mine { align-self: flex-end; background: var(--brand); color: #fff; border-bottom-right-radius: 4px; }
+  .chat-msg.theirs { align-self: flex-start; background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .chat-msg-time { font-size: 10px; opacity: .7; margin-top: 4px; display: block; }
+  .chat-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); background: #fff; }
+  .chat-input input { flex: 1; }
+  .chat-empty { flex: 1; display: grid; place-items: center; color: var(--muted); padding: 40px; text-align: center; }
+
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.responsive { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.responsive thead th { text-align: left; padding: 10px 8px; border-bottom: 2px solid var(--line); font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+  table.responsive tbody td { padding: 12px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+
+  .pw-row { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .pw-row .pw-email { font-weight: 600; }
+  .pw-row code { background: #F3F4F6; padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+
+  .record-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); gap: 12px; flex-wrap: wrap; }
+  .record-row .record-body { flex: 1; min-width: 200px; }
+
+  /* Referral card specific */
+  .referral-code-box { background: #fff; border: 2px dashed var(--gold); border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+  .referral-code-box code { font-family: 'Sora'; font-weight: 800; font-size: 20px; color: var(--gold); letter-spacing: .08em; }
+  .referral-link { background: #F3F4F6; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--muted); word-break: break-all; margin: 8px 0; font-family: monospace; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(10, 20, 30, 0.55); display: grid; place-items: center; z-index: 100; padding: 16px; animation: fadeIn .15s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-content { background: #fff; border-radius: 14px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .modal-header { padding: 18px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .modal-header h2 { font-size: 18px; }
+  .modal-close { font-size: 24px; line-height: 1; color: var(--muted); width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; }
+  .modal-close:hover { background: #F3F4F6; color: var(--ink); }
+  .modal-body { padding: 20px 22px; }
+  .modal-footer { padding: 16px 22px; border-top: 1px solid var(--line); display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; background: #FAFBFC; }
+
+  @media (max-width: 480px) {
+    .btn { font-size: 14px; padding: 11px 16px; }
+    .stat .value { font-size: 20px; }
+    .section-head { flex-direction: column; align-items: flex-start; }
+    .kcb-box { padding: 16px; }
+    .modal-footer { flex-direction: column; }
+    .modal-footer .btn { width: 100%; }
+    .plan-card .plan-price { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="toast-wrap"></div>
+
+<script>
+/* ============================================================
+   MASTATECH — Single-file application (v4)
+   ============================================================ */
+
+const $ = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+const uid = () => Math.random().toString(36).slice(2, 10);
+const slugify = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+/* ============================================================
+   MONEY FORMATTER — KES
+   ============================================================ */
+const money = (n) => {
+  const num = Number(n || 0);
+  if (num === 0) return 'Free';
+  return 'KES ' + num.toLocaleString('en-KE', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+};
+
+const toast = (msg, type = '') => {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  $('#toast-wrap').appendChild(el);
+  setTimeout(() => el.remove(), 3800);
+};
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const APP_NAME = 'MASTATECH';
+const ADMIN_EMAIL = 'sarunikaria@gmail.com';
+const ADMIN_PASSWORD = 'Samkaria123#';
+const REFERRAL_BONUS = 200;
+const BANK = {
+  bankName: 'KCB Bank Kenya',
+  accountNumber: '1320673813',
+  accountName: 'MASTATECH Global',
+  swift: 'KCBLKENX',
+  branch: 'Nairobi Main',
+};
+const SUPPORT_EMAIL = 'sarunikaria@gmail.com';
+
+/* ============================================================
+   PHONE COUNTRY MAP
+   ============================================================ */
+const PHONE_COUNTRY_MAP = {
+  '254': 'Kenya', '255': 'Tanzania', '256': 'Uganda', '250': 'Rwanda',
+  '257': 'Burundi', '234': 'Nigeria', '233': 'Ghana', '27': 'South Africa',
+  '20': 'Egypt', '251': 'Ethiopia', '212': 'Morocco', '216': 'Tunisia',
+  '213': 'Algeria', '218': 'Libya', '249': 'Sudan', '211': 'South Sudan',
+  '291': 'Eritrea', '252': 'Somalia', '253': 'Djibouti', '260': 'Zambia',
+  '263': 'Zimbabwe', '258': 'Mozambique', '264': 'Namibia', '267': 'Botswana',
+  '268': 'Eswatini', '266': 'Lesotho', '261': 'Madagascar', '230': 'Mauritius',
+  '248': 'Seychelles', '244': 'Angola', '243': 'DRC', '242': 'Congo',
+  '241': 'Gabon', '240': 'Equatorial Guinea', '239': 'Sao Tome and Principe',
+  '238': 'Cape Verde', '235': 'Chad', '236': 'Central African Republic',
+  '237': 'Cameroon', '228': 'Togo', '229': 'Benin', '227': 'Niger',
+  '226': 'Burkina Faso', '225': 'Ivory Coast', '224': 'Guinea', '223': 'Mali',
+  '222': 'Mauritania', '221': 'Senegal', '220': 'Gambia', '231': 'Liberia',
+  '232': 'Sierra Leone', '245': 'Guinea-Bissau', '44': 'United Kingdom',
+  '1': 'United States', '33': 'France', '49': 'Germany', '39': 'Italy',
+  '34': 'Spain', '351': 'Portugal', '31': 'Netherlands', '32': 'Belgium',
+  '41': 'Switzerland', '43': 'Austria', '48': 'Poland', '30': 'Greece',
+  '90': 'Turkey', '7': 'Russia', '86': 'China', '81': 'Japan',
+  '82': 'South Korea', '91': 'India', '92': 'Pakistan', '880': 'Bangladesh',
+  '971': 'United Arab Emirates', '966': 'Saudi Arabia', '974': 'Qatar',
+  '965': 'Kuwait', '973': 'Bahrain', '968': 'Oman', '962': 'Jordan',
+  '961': 'Lebanon', '963': 'Syria', '964': 'Iraq', '98': 'Iran',
+  '972': 'Israel', '61': 'Australia', '64': 'New Zealand', '55': 'Brazil',
+  '54': 'Argentina', '52': 'Mexico', '57': 'Colombia', '56': 'Chile',
+  '51': 'Peru', '58': 'Venezuela'
+};
+
+function detectCountryFromPhone(phone) {
+  const digits = String(phone || '').replace(/\D/g, '');
+  if (digits.length < 4) return null;
+  const codes = Object.keys(PHONE_COUNTRY_MAP).sort((a, b) => b.length - a.length);
+  for (const code of codes) {
+    if (digits.startsWith(code)) return PHONE_COUNTRY_MAP[code];
+  }
+  return null;
+}
+
+function getAllCountriesList() {
+  return [...new Set(Object.values(PHONE_COUNTRY_MAP))].sort();
+}
+
+function generateReferralCode() {
+  let code, attempts = 0;
+  do {
+    code = 'MST-' + uid().toUpperCase();
+    attempts++;
+  } while (db.users.find(u => u.referralCode === code) && attempts < 10);
+  return code;
+}
+
+const IMG = {
+  bizPackaging: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80',
+  bizAgency:    'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80',
+  bizFarm:      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80',
+  bizFintech:   'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80',
+  course1:      'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80',
+  course2:      'https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&fit=crop&w=800&q=80',
+  resMarketing: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
+  resFinance:   'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80',
+  resReport:    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
+  resVideo:     'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+  prod1:        'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80',
+  prod2:        'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80',
+  prod3:        'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?auto=format&fit=crop&w=800&q=80',
+  avatar1:      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+  avatar2:      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+  avatar3:      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80',
+  avatar4:      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+  adminAvatar:  'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80',
+};
+
+/* ============================================================
+   BACKEND
+   ============================================================ */
+const Backend = {
+  DB_KEY: 'masatech_db_v4',
+  PWD_KEY: 'masatech_passwords_v4',
+  SESSION_KEY: 'masatech_session_v4',
+
+  load() {
+    const raw = localStorage.getItem(this.DB_KEY);
+    return raw ? JSON.parse(raw) : null;
+  },
+  save(data) {
+    try { localStorage.setItem(this.DB_KEY, JSON.stringify(data)); return { success: true }; }
+    catch (e) { console.error('Backend.save error', e); return { success: false, error: e.message }; }
+  },
+
+  passwords: {
+    list() { const raw = localStorage.getItem(Backend.PWD_KEY); return raw ? JSON.parse(raw) : []; },
+    save(rows) { localStorage.setItem(Backend.PWD_KEY, JSON.stringify(rows)); },
+    upsert(email, password, role, name) {
+      const rows = this.list();
+      const existing = rows.find(r => r.email.toLowerCase() === email.toLowerCase());
+      const now = new Date().toISOString();
+      if (existing) {
+        existing.password = password; existing.role = role; existing.name = name; existing.updatedAt = now;
+      } else {
+        rows.push({ id: 'pw_' + uid(), email: email.toLowerCase(), password, role, name, isAdmin: email.toLowerCase() === ADMIN_EMAIL.toLowerCase(), createdAt: now, updatedAt: now, lastLogin: null });
+      }
+      this.save(rows);
+    },
+    recordLogin(email) {
+      const rows = this.list();
+      const r = rows.find(x => x.email.toLowerCase() === email.toLowerCase());
+      if (r) { r.lastLogin = new Date().toISOString(); this.save(rows); }
+    },
+    verify(email, password) {
+      return this.list().find(r => r.email.toLowerCase() === email.toLowerCase() && r.password === password) || null;
+    },
+    deleteByEmail(email) {
+      this.save(this.list().filter(r => r.email.toLowerCase() !== email.toLowerCase()));
+    },
+  },
+
+  users: {
+    list() { return db.users; },
+    get(id) { return db.users.find(u => u.id === id); },
+    create(user) {
+      db.users.push(user);
+      Backend.passwords.upsert(user.email, user.password, user.role, user.name);
+      Backend.save(db);
+      return user;
+    },
+    delete(id) {
+      const u = db.users.find(x => x.id === id);
+      if (!u) return false;
+      db.users = db.users.filter(x => x.id !== id);
+      db.businesses = db.businesses.filter(b => b.ownerId !== id);
+      db.enrollments = db.enrollments.filter(e => e.userId !== id);
+      db.orders = db.orders.filter(o => o.userId !== id);
+      db.subscriptions = db.subscriptions.filter(s => s.userId !== id);
+      db.notifications = db.notifications.filter(n => n.userId !== id);
+      db.conversations = db.conversations.filter(c => !c.participants.includes(id));
+      db.referrals = db.referrals.filter(r => r.referrerId !== id && r.referredUserId !== id);
+      Backend.passwords.deleteByEmail(u.email);
+      Backend.save(db);
+      return true;
+    },
+    count() { return db.users.length; },
+  },
+
+  businesses: {
+    list() { return db.businesses; },
+    get(id) { return db.businesses.find(b => b.id === id); },
+    create(biz) { db.businesses.push(biz); Backend.save(db); return biz; },
+    delete(id) {
+      const before = db.businesses.length;
+      db.businesses = db.businesses.filter(b => b.id !== id);
+      Backend.save(db);
+      return db.businesses.length < before;
+    },
+    verify(id) {
+      const b = db.businesses.find(x => x.id === id);
+      if (!b) return false;
+      b.verified = true; Backend.save(db); return true;
+    },
+    count() { return db.businesses.length; },
+  },
+
+  orders: {
+    list() { return db.orders; },
+    get(id) { return db.orders.find(o => o.id === id); },
+    create(order) { db.orders.push(order); Backend.save(db); return order; },
+    update(id, patch) {
+      const o = db.orders.find(x => x.id === id);
+      if (!o) return null;
+      Object.assign(o, patch); Backend.save(db); return o;
+    },
+    delete(id) {
+      const before = db.orders.length;
+      db.orders = db.orders.filter(o => o.id !== id);
+      Backend.save(db);
+      return db.orders.length < before;
+    },
+    byUser(userId) { return db.orders.filter(o => o.userId === userId); },
+    pending() { return db.orders.filter(o => o.status === 'PENDING_VERIFICATION'); },
+    approved() { return db.orders.filter(o => o.status === 'APPROVED'); },
+  },
+
+  subscriptions: {
+    byUser(userId) { return db.subscriptions.filter(s => s.userId === userId && s.status === 'ACTIVE'); },
+    activate(userId, planId) {
+      db.subscriptions = db.subscriptions.filter(s => s.userId !== userId || s.status !== 'ACTIVE');
+      db.subscriptions.push({ id: uid(), userId, planId, billing: 'monthly', status: 'ACTIVE', createdAt: Date.now() });
+      Backend.save(db);
+    },
+  },
+
+  notifications: {
+    list() { return db.notifications; },
+    byUser(userId) { return db.notifications.filter(n => n.userId === userId); },
+    create(n) { db.notifications.push(n); Backend.save(db); return n; },
+    delete(id) {
+      const before = db.notifications.length;
+      db.notifications = db.notifications.filter(n => n.id !== id);
+      Backend.save(db);
+      return db.notifications.length < before;
+    },
+    clearFor(userId) {
+      db.notifications = db.notifications.filter(n => n.userId !== userId);
+      Backend.save(db);
+    },
+  },
+
+  referrals: {
+    list() { return db.referrals || []; },
+    byReferrer(userId) { return (db.referrals || []).filter(r => r.referrerId === userId); },
+    create(r) {
+      if (!db.referrals) db.referrals = [];
+      db.referrals.push(r);
+      Backend.save(db);
+      return r;
+    },
+    markPaid(id) {
+      const r = (db.referrals || []).find(x => x.id === id);
+      if (!r) return false;
+      r.status = 'PAID';
+      r.paidAt = Date.now();
+      Backend.save(db);
+      return true;
+    },
+    delete(id) {
+      if (!db.referrals) return false;
+      const before = db.referrals.length;
+      db.referrals = db.referrals.filter(r => r.id !== id);
+      Backend.save(db);
+      return db.referrals.length < before;
+    },
+    pending() { return (db.referrals || []).filter(r => r.status === 'PENDING'); },
+    paid() { return (db.referrals || []).filter(r => r.status === 'PAID'); },
+  },
+
+  discussions: {
+    create(d) { db.discussions.push(d); Backend.save(db); return d; },
+    delete(id) {
+      const before = db.discussions.length;
+      db.discussions = db.discussions.filter(x => x.id !== id);
+      delete db.comments[id];
+      Backend.save(db);
+      return db.discussions.length < before;
+    },
+  },
+
+  conversations: {
+    byUser(userId) { return db.conversations.filter(c => c.participants.includes(userId)); },
+    delete(id) {
+      const before = db.conversations.length;
+      db.conversations = db.conversations.filter(c => c.id !== id);
+      Backend.save(db);
+      return db.conversations.length < before;
+    },
+    deleteMessage(convId, msgId) {
+      const c = db.conversations.find(x => x.id === convId);
+      if (!c) return false;
+      const before = c.messages.length;
+      c.messages = c.messages.filter(m => m.id !== msgId);
+      Backend.save(db);
+      return c.messages.length < before;
+    },
+  },
+
+  exportJSON() {
+    return { exportedAt: new Date().toISOString(), app: APP_NAME, data: db, passwords: this.passwords.list() };
+  },
+};
+
+/* ============ SEED (all prices in KES) ============ */
+function seed() {
+  const now = Date.now();
+  return {
+    users: [
+      { id: 'u_admin', name: 'Admin', email: ADMIN_EMAIL, password: ADMIN_PASSWORD, phone: '+254700123456', role: 'ADMIN', country: 'Kenya', city: 'Nairobi', headline: 'Platform Administrator', avatar: IMG.adminAvatar, referralCode: 'MST-ADMIN01', referredBy: null, referralEarnings: 0, createdAt: now - 86400000 * 90 },
+      { id: 'u_owner1', name: 'Grace Wanjiku', email: 'grace@masatech.io', password: 'Password123!', phone: '+254712345678', role: 'BUSINESS_OWNER', country: 'Kenya', city: 'Nairobi', headline: 'Founder, Nairobi Packaging Co.', avatar: IMG.avatar1, referralCode: 'MST-GRACE01', referredBy: null, referralEarnings: 0, createdAt: now - 86400000 * 45 },
+      { id: 'u_owner2', name: 'Kwame Mensah', email: 'kwame@masatech.io', password: 'Password123!', phone: '+233201234567', role: 'BUSINESS_OWNER', country: 'Ghana', city: 'Accra', headline: 'Founder, Accra Digital Hub', avatar: IMG.avatar2, referralCode: 'MST-KWAME01', referredBy: null, referralEarnings: 0, createdAt: now - 86400000 * 30 },
+      { id: 'u_instr', name: 'Amina Okoro', email: 'amina@masatech.io', password: 'Password123!', phone: '+2348012345678', role: 'INSTRUCTOR', country: 'Nigeria', city: 'Lagos', headline: 'Business Finance Coach', avatar: IMG.avatar3, referralCode: 'MST-AMINA01', referredBy: null, referralEarnings: 0, createdAt: now - 86400000 * 60 },
+      { id: 'u_student', name: 'David Mwangi', email: 'david@masatech.io', password: 'Password123!', phone: '+254722345678', role: 'USER', country: 'Kenya', city: 'Mombasa', headline: 'Aspiring Entrepreneur', avatar: IMG.avatar4, referralCode: 'MST-DAVID01', referredBy: null, referralEarnings: 0, createdAt: now - 86400000 * 10 }
+    ],
+    industries: [
+      'Entrepreneurship & Startups','Marketing & Advertising','Finance & Investment',
+      'Technology & AI','Agriculture & Agribusiness','Real Estate',
+      'Manufacturing','Retail & E-commerce','Freelancing & Remote Work',
+      'Education & Professional Development'
+    ].map((name, i) => ({ id: 'ind_' + i, name, slug: slugify(name) })),
+    plans: [
+      { id: 'free', name: 'Free Starter', monthly: 0, annual: 0, features: ['Professional profile','Browse directory','5 resource downloads/mo','3 community posts/mo'] },
+      { id: 'pro', name: 'Professional', monthly: 2500, annual: 24000, features: ['50 downloads/mo','Premium database access','Exclusive communities','Opportunity alerts','10% course discount'] },
+      { id: 'premium', name: 'Business Premium', monthly: 7500, annual: 72000, featured: true, features: ['Everything in Pro','Verified listing priority','Enhanced analytics','Priority support','20 RFQ responses/mo'] },
+      { id: 'enterprise', name: 'Enterprise', monthly: 25000, annual: 240000, features: ['10 team seats','Team management','Corporate LMS','Premium research','Dedicated support'] }
+    ],
+    businesses: [
+      { id: 'b1', ownerId: 'u_owner1', name: 'Nairobi Packaging Co.', slug: 'nairobi-packaging-co', image: IMG.bizPackaging, description: 'Eco-friendly packaging solutions for East African SMEs.', industryId: 'ind_6', country: 'Kenya', city: 'Nairobi', website: 'https://nairobi-packaging.demo', verified: true, isDemo: true, createdAt: now - 86400000 * 12 },
+      { id: 'b2', ownerId: 'u_owner2', name: 'Accra Digital Hub', slug: 'accra-digital-hub', image: IMG.bizAgency, description: 'Full-service digital marketing agency serving West Africa.', industryId: 'ind_1', country: 'Ghana', city: 'Accra', website: 'https://accra-digital.demo', verified: true, isDemo: true, createdAt: now - 86400000 * 30 },
+      { id: 'b3', ownerId: 'u_owner1', name: 'JHB Fresh Farms', slug: 'jhb-fresh-farms', image: IMG.bizFarm, description: 'Agribusiness supplying fresh produce to Johannesburg.', industryId: 'ind_4', country: 'South Africa', city: 'Johannesburg', verified: false, isDemo: true, createdAt: now - 86400000 * 5 },
+      { id: 'b4', ownerId: 'u_owner2', name: 'Lagos Fintech Labs', slug: 'lagos-fintech-labs', image: IMG.bizFintech, description: 'Building payment infrastructure for African businesses.', industryId: 'ind_3', country: 'Nigeria', city: 'Lagos', verified: true, isDemo: true, createdAt: now - 86400000 * 60 }
+    ],
+    resources: [
+      { id: 'r1', authorId: 'u_admin', title: 'SME Marketing Playbook 2026', slug: 'sme-marketing-playbook-2026', image: IMG.resMarketing, description: 'Practical 40-page guide on brand positioning and customer acquisition.', type: 'PDF', category: 'Marketing', fileSize: '2.4 MB', verified: true, isDemo: true, downloads: 128, createdAt: now - 86400000 * 3 },
+      { id: 'r2', authorId: 'u_admin', title: 'Cash Flow Forecasting Template', slug: 'cash-flow-forecasting-template', image: IMG.resFinance, description: 'Excel-based 13-week cash flow forecasting template.', type: 'TEMPLATE', category: 'Finance', fileSize: '340 KB', verified: true, isDemo: true, downloads: 302, createdAt: now - 86400000 * 8 },
+      { id: 'r3', authorId: 'u_admin', title: 'African Startups Report 2025', slug: 'african-startups-report-2025', image: IMG.resReport, description: 'Annual research on funding and trends in African startups.', type: 'REPORT', category: 'Investment', fileSize: '5.1 MB', verified: true, isDemo: true, downloads: 456, createdAt: now - 86400000 * 20 }
+    ],
+    discussions: [
+      { id: 'd1', authorId: 'u_owner1', title: 'How do you price a service business in a new market?', slug: 'how-do-you-price', body: "I'm expanding into Tanzania and struggling with pricing.", category: 'Entrepreneurship', replies: 1, createdAt: now - 86400000 * 2, isPinned: false },
+      { id: 'd2', authorId: 'u_owner2', title: 'Best way to find your first 10 customers?', slug: 'best-way-first-customers', body: "Starting a new digital agency in Accra. What's worked?", category: 'Marketing', replies: 2, createdAt: now - 86400000 * 5, isPinned: true }
+    ],
+    comments: {
+      'd1': [{ id: 'c1', authorId: 'u_owner2', body: 'Match local rates for entry, but add a premium tier.', createdAt: now - 86400000 * 1 }],
+      'd2': [
+        { id: 'c2', authorId: 'u_owner1', body: 'Direct outreach worked better than paid ads.', createdAt: now - 86400000 * 4 },
+        { id: 'c3', authorId: 'u_instr', body: 'Offer a paid pilot — lowers risk for the client.', createdAt: now - 86400000 * 3 }
+      ]
+    },
+    opportunities: [
+      { id: 'o1', title: 'SME Growth Fund 2026', slug: 'sme-growth-fund-2026', type: 'GRANT', organization: 'African Development Bank', country: 'Kenya', industryId: 'ind_0', description: 'Grant funding of KES 1.3M–6.5M for SMEs.', deadline: now + 86400000 * 30, verified: true, isDemo: true },
+      { id: 'o2', title: 'Supply of Office Furniture Tender', slug: 'supply-office-tender', type: 'TENDER', organization: 'Nairobi County Government', country: 'Kenya', industryId: 'ind_6', description: 'Tender for supply of office furniture.', deadline: now + 86400000 * 14, verified: true, isDemo: true }
+    ],
+    courses: [
+      { id: 'co1', instructorId: 'u_instr', title: 'Cash Flow Mastery for SMEs', slug: 'cash-flow-mastery', image: IMG.course1, description: 'Learn to forecast, manage and grow your business cash flow.', price: 6500, level: 'Beginner', lessons: [
+        { id: 'l1', title: 'Why cash flow matters', duration: 8, content: 'Cash flow is the lifeblood of your business.' },
+        { id: 'l2', title: 'Understanding your numbers', duration: 12, content: 'Breakdown of revenue, COGS, operating expenses.' }
+      ], isDemo: true },
+      { id: 'co2', instructorId: 'u_instr', title: 'Customer Acquisition for African Startups', slug: 'customer-acquisition', image: IMG.course2, description: 'Practical playbook for acquiring your first 100 customers.', price: 5000, level: 'Beginner', lessons: [
+        { id: 'l5', title: 'Defining your ideal customer', duration: 10, content: 'Narrow beats broad.' }
+      ], isDemo: true }
+    ],
+    enrollments: [],
+    products: [
+      { id: 'p1', sellerId: 'u_instr', title: 'Ultimate Business Plan Template', slug: 'business-plan-template', image: IMG.prod1, description: '50-page editable business plan template.', price: 3500, type: 'DIGITAL DOWNLOAD', industryId: 'ind_0', isDemo: true },
+      { id: 'p2', sellerId: 'u_instr', title: 'Pitch Deck Masterclass', slug: 'pitch-deck-masterclass', image: IMG.prod2, description: '90-minute video + 12 real pitch decks.', price: 2500, type: 'DIGITAL DOWNLOAD', industryId: 'ind_0', isDemo: true }
+    ],
+    cart: [],
+    orders: [],
+    subscriptions: [
+      { id: 's_sub1', userId: 'u_owner1', planId: 'free', billing: 'monthly', status: 'ACTIVE', createdAt: now - 86400000 }
+    ],
+    notifications: [],
+    conversations: [
+      { id: 'conv_seed1', participants: ['u_admin', 'u_owner1'], createdAt: now - 3600000, messages: [
+        { id: 'm1', from: 'u_admin', body: 'Hi Grace, welcome to MASTATECH!', at: now - 3600000 }
+      ]}
+    ],
+    referrals: []
+  };
+}
+
+/* ============ STATE ============ */
+let db = Backend.load() || seed();
+let session = JSON.parse(localStorage.getItem(Backend.SESSION_KEY) || 'null');
+
+(function bootstrap() {
+  // Ensure schema completeness
+  if (!db.referrals) db.referrals = [];
+  db.users.forEach(u => {
+    if (!u.referralCode) u.referralCode = 'MST-' + u.id.replace(/[^a-z0-9]/gi, '').slice(0, 6).toUpperCase();
+    if (u.referralEarnings === undefined) u.referralEarnings = 0;
+    if (u.referredBy === undefined) u.referredBy = null;
+  });
+  if (Backend.passwords.list().length === 0) {
+    db.users.forEach(u => Backend.passwords.upsert(u.email, u.password, u.role, u.name));
+    Backend.passwords.upsert(ADMIN_EMAIL, ADMIN_PASSWORD, 'ADMIN', 'Admin');
+  }
+  if (!Backend.load()) Backend.save(db);
+})();
+
+const save = () => Backend.save(db);
+const currentUser = () => session ? db.users.find(u => u.id === session.userId) : null;
+const isAdmin = () => {
+  const u = currentUser();
+  return u && u.role === 'ADMIN' && u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+};
+const login = (u) => {
+  session = { userId: u.id, name: u.name, email: u.email, role: u.role };
+  localStorage.setItem(Backend.SESSION_KEY, JSON.stringify(session));
+  Backend.passwords.recordLogin(u.email);
+};
+const logout = () => {
+  session = null;
+  localStorage.removeItem(Backend.SESSION_KEY);
+  navigate('home');
+};
+const currentRoute = () => {
+  const h = location.hash.replace('#', '');
+  if (!h) return { name: 'home' };
+  try { return JSON.parse(decodeURIComponent(h)); } catch { return { name: 'home' }; }
+};
+const navigate = (name, params = {}) => {
+  location.hash = encodeURIComponent(JSON.stringify({ name, ...params }));
+};
+
+/* ============================================================
+   PRINT MEMBER DOCUMENT (admin only)
+   ============================================================ */
+function printMemberDocument(user) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  if (!user) return toast('User not found.', 'err');
+
+  const sub = Backend.subscriptions.byUser(user.id)[0];
+  const plan = sub ? db.plans.find(p => p.id === sub.planId) : db.plans[0];
+  const memberSince = new Date(user.createdAt || Date.now()).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  const docId = 'MST-DOC-' + String(user.id || 'X').toUpperCase() + '-' + new Date().getFullYear();
+  const issuedOn = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  const businessCount = db.businesses.filter(b => b.ownerId === user.id).length;
+  const courseCount = db.enrollments.filter(e => e.userId === user.id).length;
+  const referralCount = (db.referrals || []).filter(r => r.referrerId === user.id).length;
+  const referralEarnings = (db.referrals || []).filter(r => r.referrerId === user.id).reduce((s, r) => s + r.amount, 0);
+
+  const html = '<!DOCTYPE html>\n' +
+'<html lang="en"><head><meta charset="UTF-8"><title>MASTATECH — ' + esc(user.name) + '</title>\n' +
+'<style>\n' +
+'@page { size: A4; margin: 0; }\n' +
+'* { box-sizing: border-box; margin: 0; padding: 0; }\n' +
+'body { font-family: Helvetica, Arial, sans-serif; color: #1F2937; line-height: 1.5; background: #E5E7EB; padding: 20px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }\n' +
+'.toolbar { position: fixed; top: 0; left: 0; right: 0; background: #0F4C5C; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 10px; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.2); flex-wrap: wrap; }\n' +
+'.toolbar h1 { font-size: 14px; font-weight: 600; }\n' +
+'.toolbar .actions { display: flex; gap: 8px; }\n' +
+'.toolbar .btn { background: #F4A261; color: #fff; padding: 10px 18px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; font-family: inherit; }\n' +
+'.toolbar .btn:hover { background: #E08B47; }\n' +
+'.toolbar .btn.close { background: #6B7280; }\n' +
+'.page { width: 210mm; min-height: 297mm; margin: 60px auto 20px; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.15); display: flex; flex-direction: column; position: relative; overflow: hidden; }\n' +
+'.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-35deg); font-size: 90px; font-weight: 900; color: rgba(15,76,92,0.035); letter-spacing: .1em; user-select: none; pointer-events: none; white-space: nowrap; z-index: 0; }\n' +
+'.letterhead { background: #0F4C5C; color: #fff; padding: 16px 18mm; display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }\n' +
+'.logo-mark { width: 42px; height: 42px; border-radius: 8px; background: #F4A261; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: #fff; }\n' +
+'.brand h2 { color: #fff; font-size: 20px; margin: 0; font-weight: 800; }\n' +
+'.brand p { font-size: 10px; color: #D5E5EB; margin: 2px 0 0; }\n' +
+'.page-content { padding: 14mm 18mm; position: relative; z-index: 1; flex: 1; }\n' +
+'.title-section { text-align: center; margin: 8px 0 16px; }\n' +
+'.title-section h1 { color: #0F4C5C; font-size: 18px; letter-spacing: .06em; font-weight: 800; }\n' +
+'.title-section p { color: #6B7280; font-size: 10px; margin-top: 6px; line-height: 1.5; }\n' +
+'.doc-id-box { background: #F0F9FB; border: 1px solid #A5D6E0; border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; margin-bottom: 18px; font-size: 10px; gap: 8px; flex-wrap: wrap; }\n' +
+'.doc-id-box strong { color: #0F4C5C; }\n' +
+'.section { margin-bottom: 14px; }\n' +
+'.section h3 { color: #0F4C5C; font-size: 12px; margin-bottom: 6px; border-bottom: 1.5px solid #0F4C5C; padding-bottom: 4px; font-weight: 800; }\n' +
+'.field-grid { display: grid; grid-template-columns: 140px 1fr; gap: 5px 12px; font-size: 10px; }\n' +
+'.field-grid dt { font-weight: 700; color: #4B5563; }\n' +
+'.field-grid dd { color: #1F2937; }\n' +
+'.terms { font-size: 9.5px; color: #4B5563; line-height: 1.6; }\n' +
+'.signature-block { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 8px; gap: 20px; }\n' +
+'.sig { width: 45%; }\n' +
+'.sig .line { border-top: 1px solid #9CA3AF; padding-top: 5px; }\n' +
+'.sig .label { font-weight: 700; color: #4B5563; font-size: 9.5px; }\n' +
+'.sig .sub { color: #9CA3AF; font-size: 8.5px; margin-top: 1px; }\n' +
+'.footer { background: #0F4C5C; color: #fff; text-align: center; padding: 10px; font-size: 8.5px; line-height: 1.5; position: relative; z-index: 1; }\n' +
+'@media print { body { background: #fff; padding: 0; } .toolbar { display: none !important; } .page { margin: 0; box-shadow: none; width: 100%; min-height: 297mm; } }\n' +
+'</style></head><body>\n' +
+'<div class="toolbar"><h1>🖨 Print / Save as PDF</h1><div class="actions"><button class="btn" onclick="window.print()">🖨 Print / Save as PDF</button><button class="btn close" onclick="window.close()">✕ Close</button></div></div>\n' +
+'<div class="page">\n' +
+'<div class="watermark">OFFICIAL</div>\n' +
+'<div class="letterhead"><div class="logo-mark">M</div><div class="brand"><h2>MASTATECH</h2><p>Where Businesses Connect, Learn &amp; Grow · masatech.io · ' + esc(SUPPORT_EMAIL) + '</p></div></div>\n' +
+'<div class="page-content">\n' +
+'<div class="title-section"><h1>OFFICIAL MEMBER RECORD DOCUMENT</h1><p>This document is an official record of membership on the MASTATECH platform,<br>issued for administrative and record-keeping purposes.</p></div>\n' +
+'<div class="doc-id-box"><span><strong>Document ID:</strong> ' + esc(docId) + '</span><span><strong>Issued:</strong> ' + esc(issuedOn) + '</span></div>\n' +
+'<div class="section"><h3>1. Member Information</h3><dl class="field-grid">\n' +
+'<dt>Full Name</dt><dd>' + esc(user.name) + '</dd>\n' +
+'<dt>Email Address</dt><dd>' + esc(user.email) + '</dd>\n' +
+'<dt>Phone Number</dt><dd>' + esc(user.phone || '—') + '</dd>\n' +
+'<dt>Member ID</dt><dd>' + esc(user.id) + '</dd>\n' +
+'<dt>Member Type</dt><dd>' + esc(user.role) + '</dd>\n' +
+'<dt>Country</dt><dd>' + esc(user.country || '—') + '</dd>\n' +
+'<dt>City</dt><dd>' + esc(user.city || '—') + '</dd>\n' +
+'<dt>Membership Plan</dt><dd>' + esc(plan ? plan.name : 'Free Starter') + '</dd>\n' +
+'<dt>Member Since</dt><dd>' + esc(memberSince) + '</dd>\n' +
+'<dt>Referral Code</dt><dd>' + esc(user.referralCode || '—') + '</dd>\n' +
+'</dl></div>\n' +
+'<div class="section"><h3>2. Account Summary</h3><dl class="field-grid">\n' +
+'<dt>Platform</dt><dd>MASTATECH Global Business Network</dd>\n' +
+'<dt>Account Status</dt><dd>Active</dd>\n' +
+'<dt>Payment Method</dt><dd>KCB Bank Transfer</dd>\n' +
+'<dt>Business Listings</dt><dd>' + businessCount + '</dd>\n' +
+'<dt>Enrolled Courses</dt><dd>' + courseCount + '</dd>\n' +
+'<dt>Referrals</dt><dd>' + referralCount + ' (' + money(referralEarnings) + ' earned)</dd>\n' +
+'</dl></div>\n' +
+'<div class="section"><h3>3. Terms &amp; Conditions</h3><div class="terms">This document confirms the member\'s registration on the MASTATECH platform and is issued by the administration for record-keeping purposes. It is not a legal identity document, financial instrument, or guarantee of services. Membership is subject to MASTATECH\'s terms of service. Any alteration or forgery of this document is prohibited.<br><br>For verification, please contact ' + esc(SUPPORT_EMAIL) + ' with the Document ID above.</div></div>\n' +
+'<div class="signature-block"><div class="sig"><div class="line"><div class="label">Authorized Signature</div><div class="sub">For MASTATECH Global</div></div></div><div class="sig"><div class="line"><div class="label">Date of Issue</div><div class="sub">' + esc(issuedOn) + '</div></div></div></div>\n' +
+'</div>\n' +
+'<div class="footer">MASTATECH Global · Official Member Record Document · ' + esc(SUPPORT_EMAIL) + '<br>This document is computer-generated and valid without a physical signature.</div>\n' +
+'</div>\n' +
+'<script>setTimeout(function(){try{window.print();}catch(e){}},900);<\/script>\n' +
+'</body></html>';
+
+  const w = window.open('', '_blank');
+  if (!w) return toast('Popup blocked. Please allow popups.', 'err');
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  toast('Print window opened. Use "Save as PDF".', 'ok');
+}
+
+function printMembersRegister() {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  const users = db.users;
+  const rows = users.map((u, i) => {
+    const sub = Backend.subscriptions.byUser(u.id)[0];
+    const plan = sub ? db.plans.find(p => p.id === sub.planId) : null;
+    return '<tr>' +
+      '<td>' + (i + 1) + '</td>' +
+      '<td>' + esc(u.name) + '</td>' +
+      '<td>' + esc(u.email) + '</td>' +
+      '<td>' + esc(u.phone || '—') + '</td>' +
+      '<td>' + esc(u.role) + '</td>' +
+      '<td>' + esc(u.country || '—') + '</td>' +
+      '<td>' + esc(plan ? plan.name : 'Free') + '</td>' +
+      '<td>' + new Date(u.createdAt || Date.now()).toLocaleDateString() + '</td>' +
+      '</tr>';
+  }).join('');
+
+  const html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>MASTATECH — Member Register</title>\n' +
+'<style>\n@page { size: A4 landscape; margin: 12mm; }\n* { box-sizing: border-box; margin: 0; padding: 0; }\nbody { font-family: Helvetica, Arial, sans-serif; color: #1F2937; line-height: 1.4; background: #E5E7EB; padding: 20px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }\n.toolbar { position: fixed; top: 0; left: 0; right: 0; background: #0F4C5C; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 10px; z-index: 100; }\n.toolbar h1 { font-size: 14px; }\n.toolbar .btn { background: #F4A261; color: #fff; padding: 10px 18px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }\n.toolbar .btn.close { background: #6B7280; }\n.page { max-width: 277mm; margin: 60px auto 20px; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 12mm; }\n.letterhead { background: #0F4C5C; color: #fff; padding: 14px 18px; display: flex; align-items: center; gap: 14px; border-radius: 6px; margin-bottom: 20px; }\n.logo-mark { width: 42px; height: 42px; border-radius: 8px; background: #F4A261; display: grid; place-items: center; font-size: 22px; font-weight: 900; color: #fff; }\n.brand h2 { color: #fff; font-size: 20px; margin: 0; font-weight: 800; }\n.brand p { font-size: 10px; color: #D5E5EB; margin: 2px 0 0; }\n.meta { font-size: 11px; color: #6B7280; margin-bottom: 14px; }\ntable { width: 100%; border-collapse: collapse; font-size: 10px; }\nth { background: #F0F9FB; color: #0F4C5C; padding: 8px 6px; text-align: left; font-weight: 700; border-bottom: 2px solid #0F4C5C; }\ntd { padding: 7px 6px; border-bottom: 1px solid #E5E7EB; }\ntr:nth-child(even) td { background: #FAFBFC; }\n.footer { text-align: center; font-size: 9px; color: #6B7280; margin-top: 16px; padding-top: 10px; border-top: 1px solid #E5E7EB; }\n@media print { body { background: #fff; padding: 0; } .toolbar { display: none !important; } .page { margin: 0; box-shadow: none; max-width: 100%; } }\n</style></head><body>\n' +
+'<div class="toolbar"><h1>🖨 Member Register (' + users.length + ' users)</h1><div><button class="btn" onclick="window.print()">🖨 Print / Save as PDF</button> <button class="btn close" onclick="window.close()">✕ Close</button></div></div>\n' +
+'<div class="page">\n' +
+'<div class="letterhead"><div class="logo-mark">M</div><div class="brand"><h2>MASTATECH</h2><p>Where Businesses Connect, Learn &amp; Grow · ' + esc(SUPPORT_EMAIL) + '</p></div></div>\n' +
+'<div class="meta"><strong>Member Register</strong> — Generated ' + new Date().toLocaleString() + ' — ' + users.length + ' registered members</div>\n' +
+'<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Country</th><th>Plan</th><th>Registered</th></tr></thead><tbody>' + rows + '</tbody></table>\n' +
+'<div class="footer">MASTATECH · Confidential member register · ' + esc(SUPPORT_EMAIL) + '</div>\n' +
+'</div>\n' +
+'<script>setTimeout(function(){try{window.print();}catch(e){}},900);<\/script>\n' +
+'</body></html>';
+
+  const w = window.open('', '_blank');
+  if (!w) return toast('Popup blocked.', 'err');
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  toast('Member register opened. Save as PDF.', 'ok');
+}
+
+/* ============================================================
+   PRINT PAYMENT RECEIPT (user's own or admin for any)
+   ============================================================ */
+function printReceipt(orderId) {
+  const me = currentUser();
+  if (!me) return toast('Please log in.', 'err');
+  const order = db.orders.find(o => o.id === orderId);
+  if (!order) return toast('Order not found.', 'err');
+  if (order.userId !== me.id && !isAdmin()) return toast('Unauthorized.', 'err');
+  if (order.status !== 'APPROVED') return toast('Only verified purchases can generate receipts.', 'err');
+
+  const buyer = db.users.find(u => u.id === order.userId);
+  const approvedOn = new Date(order.approvedAt || order.createdAt);
+  const receiptNo = 'RCPT-' + order.id.toUpperCase().replace(/^ORD_/, '') + '-' + approvedOn.getFullYear();
+  const issuedOn = approvedOn.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  const issuedTime = approvedOn.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+  const itemsRows = order.items.map(item =>
+    '<tr>' +
+      '<td>' + esc(item.title) + '</td>' +
+      '<td style="text-align:center;">' + (item.qty || 1) + '</td>' +
+      '<td style="text-align:right;">' + money(item.price) + '</td>' +
+      '<td style="text-align:right;">' + money((item.price || 0) * (item.qty || 1)) + '</td>' +
+    '</tr>'
+  ).join('');
+
+  const subtotal = order.items.reduce((s, i) => s + (i.price || 0) * (i.qty || 1), 0);
+  const total = order.total;
+
+  const html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>MASTATECH Receipt — ' + esc(receiptNo) + '</title>\n' +
+'<style>\n' +
+'@page { size: A4; margin: 0; }\n' +
+'* { box-sizing: border-box; margin: 0; padding: 0; }\n' +
+'body { font-family: Helvetica, Arial, sans-serif; color: #1F2937; line-height: 1.5; background: #E5E7EB; padding: 20px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }\n' +
+'.toolbar { position: fixed; top: 0; left: 0; right: 0; background: #005A2B; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 10px; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.2); flex-wrap: wrap; }\n' +
+'.toolbar h1 { font-size: 14px; }\n' +
+'.toolbar .btn { background: #F4A261; color: #fff; padding: 10px 18px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; font-family: inherit; }\n' +
+'.toolbar .btn.close { background: #6B7280; }\n' +
+'.page { width: 210mm; min-height: 297mm; margin: 60px auto 20px; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.15); display: flex; flex-direction: column; position: relative; overflow: hidden; }\n' +
+'.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-35deg); font-size: 100px; font-weight: 900; color: rgba(0,90,43,0.03); letter-spacing: .1em; user-select: none; pointer-events: none; white-space: nowrap; z-index: 0; }\n' +
+'.letterhead { background: #005A2B; color: #fff; padding: 16px 18mm; display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }\n' +
+'.logo-mark { width: 42px; height: 42px; border-radius: 8px; background: #F4A261; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: #fff; }\n' +
+'.brand h2 { color: #fff; font-size: 20px; margin: 0; font-weight: 800; }\n' +
+'.brand p { font-size: 10px; color: #D5E5EB; margin: 2px 0 0; }\n' +
+'.page-content { padding: 14mm 18mm; position: relative; z-index: 1; flex: 1; }\n' +
+'.title-section { text-align: center; margin: 8px 0 16px; }\n' +
+'.title-section h1 { color: #005A2B; font-size: 22px; letter-spacing: .06em; font-weight: 800; }\n' +
+'.title-section p { color: #6B7280; font-size: 10px; margin-top: 4px; }\n' +
+'.status-badge { display: inline-block; background: #D1FAE5; color: #065F46; padding: 6px 16px; border-radius: 999px; font-size: 11px; font-weight: 800; margin-top: 8px; letter-spacing: .06em; }\n' +
+'.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 20px 0; padding: 14px; background: #F0F9FB; border-radius: 8px; font-size: 10px; }\n' +
+'.info-col h4 { color: #005A2B; font-size: 11px; margin-bottom: 6px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }\n' +
+'.info-col p { color: #1F2937; margin: 2px 0; }\n' +
+'.info-col strong { color: #4B5563; }\n' +
+'table.items { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10px; }\n' +
+'table.items thead th { background: #005A2B; color: #fff; padding: 8px; text-align: left; font-weight: 700; }\n' +
+'table.items tbody td { padding: 8px; border-bottom: 1px solid #E5E7EB; }\n' +
+'table.items tbody tr:nth-child(even) td { background: #FAFBFC; }\n' +
+'.totals { margin-top: 12px; margin-left: auto; width: 60%; font-size: 11px; }\n' +
+'.totals .row { display: flex; justify-content: space-between; padding: 6px 0; }\n' +
+'.totals .row.total { border-top: 2px solid #005A2B; margin-top: 6px; padding-top: 10px; font-size: 15px; font-weight: 800; color: #005A2B; }\n' +
+'.payment-details { margin-top: 24px; padding: 12px; background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 8px; font-size: 10px; }\n' +
+'.payment-details h4 { color: #92400E; font-size: 11px; margin-bottom: 6px; font-weight: 800; }\n' +
+'.payment-details p { color: #78350F; margin: 2px 0; }\n' +
+'.terms { margin-top: 20px; font-size: 9px; color: #6B7280; line-height: 1.6; padding: 12px; background: #F9FAFB; border-radius: 6px; }\n' +
+'.footer { background: #005A2B; color: #fff; text-align: center; padding: 10px; font-size: 8.5px; line-height: 1.5; position: relative; z-index: 1; }\n' +
+'@media print { body { background: #fff; padding: 0; } .toolbar { display: none !important; } .page { margin: 0; box-shadow: none; width: 100%; } }\n' +
+'</style></head><body>\n' +
+'<div class="toolbar"><h1>🖨 Print / Save as PDF — Receipt ' + esc(receiptNo) + '</h1><div><button class="btn" onclick="window.print()">🖨 Print / Save as PDF</button> <button class="btn close" onclick="window.close()">✕ Close</button></div></div>\n' +
+'<div class="page">\n' +
+'<div class="watermark">RECEIPT</div>\n' +
+'<div class="letterhead"><div class="logo-mark">M</div><div class="brand"><h2>MASTATECH</h2><p>Where Businesses Connect, Learn &amp; Grow · ' + esc(SUPPORT_EMAIL) + '</p></div></div>\n' +
+'<div class="page-content">\n' +
+'<div class="title-section">\n' +
+'<h1>OFFICIAL PAYMENT RECEIPT</h1>\n' +
+'<p>Receipt No: <strong>' + esc(receiptNo) + '</strong></p>\n' +
+'<p>Issued: ' + esc(issuedOn) + ' at ' + esc(issuedTime) + '</p>\n' +
+'<div class="status-badge">✓ PAYMENT VERIFIED</div>\n' +
+'</div>\n' +
+'<div class="info-row">\n' +
+'<div class="info-col">\n' +
+'<h4>Billed To</h4>\n' +
+'<p><strong>' + esc(buyer?.name || '—') + '</strong></p>\n' +
+'<p>' + esc(buyer?.email || '—') + '</p>\n' +
+'<p>' + esc(buyer?.phone || '—') + '</p>\n' +
+'<p>' + esc(buyer?.country || '') + (buyer?.city ? ', ' + esc(buyer.city) : '') + '</p>\n' +
+'</div>\n' +
+'<div class="info-col">\n' +
+'<h4>Order Information</h4>\n' +
+'<p><strong>Order ID:</strong> ' + esc(order.id) + '</p>\n' +
+'<p><strong>Date:</strong> ' + esc(issuedOn) + '</p>\n' +
+'<p><strong>Payment Method:</strong> ' + (order.isAdminGrant ? 'Admin Access' : 'KCB Bank Transfer') + '</p>\n' +
+'<p><strong>Reference:</strong> ' + esc(order.bankReference || '—') + '</p>\n' +
+'</div>\n' +
+'</div>\n' +
+'<table class="items">\n' +
+'<thead><tr><th>Item Description</th><th style="text-align:center;width:60px;">Qty</th><th style="text-align:right;width:100px;">Unit Price</th><th style="text-align:right;width:100px;">Amount</th></tr></thead>\n' +
+'<tbody>' + itemsRows + '</tbody>\n' +
+'</table>\n' +
+'<div class="totals">\n' +
+'<div class="row"><span>Subtotal</span><span>' + money(subtotal) + '</span></div>\n' +
+'<div class="row"><span>Tax</span><span>' + money(0) + '</span></div>\n' +
+'<div class="row total"><span>TOTAL PAID</span><span>' + money(total) + '</span></div>\n' +
+'</div>\n' +
+'<div class="payment-details">\n' +
+'<h4>Payment Confirmation</h4>\n' +
+'<p>Payment Method: KCB Bank Transfer</p>\n' +
+'<p>Bank Account: 1320673813 — MASTATECH Global</p>\n' +
+'<p>Transaction Reference: ' + esc(order.bankReference || '—') + '</p>\n' +
+'<p>Approved By: MASTATECH Administration</p>\n' +
+'</div>\n' +
+'<div class="terms">\n' +
+'<strong>Terms:</strong> This receipt confirms payment received and verified for the items listed above. It is an official record of your purchase on the MASTATECH platform. Retain this receipt for your records. For questions about this transaction, contact ' + esc(SUPPORT_EMAIL) + ' quoting your Receipt No. This is a computer-generated document and is valid without a physical signature.\n' +
+'</div>\n' +
+'</div>\n' +
+'<div class="footer">MASTATECH Global · Official Payment Receipt · ' + esc(receiptNo) + ' · ' + esc(SUPPORT_EMAIL) + '</div>\n' +
+'</div>\n' +
+'<script>setTimeout(function(){try{window.print();}catch(e){}},900);<\/script>\n' +
+'</body></html>';
+
+  const w = window.open('', '_blank');
+  if (!w) return toast('Popup blocked. Please allow popups.', 'err');
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  toast('Receipt opened. Save as PDF.', 'ok');
+}
+
+/* ============================================================
+   EMAIL MODAL
+   ============================================================ */
+function emailDocumentToUser(userId) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  const user = db.users.find(u => u.id === userId);
+  if (!user) return toast('User not found.', 'err');
+
+  const subject = 'Your MASTATECH Membership Document';
+  const body = 'Dear ' + user.name + ',\n\n' +
+    'Please find attached your official MASTATECH Member Record Document.\n\n' +
+    'This document confirms your registration on the MASTATECH Global Business Network and is issued for your records. ' +
+    'It includes your member ID, account summary, and document ID for verification purposes.\n\n' +
+    'If you need to verify this document or have any questions, please contact us at ' + SUPPORT_EMAIL + '.\n\n' +
+    'Best regards,\nMASTATECH Administration\n' + SUPPORT_EMAIL + '\nmasatech.io';
+
+  openEmailModal(user, subject, body);
+}
+
+function openEmailModal(user, subject, body) {
+  const existing = $('#email-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'email-modal';
+  modal.innerHTML =
+    '<div class="modal-content">' +
+      '<div class="modal-header"><h2>Email document to ' + esc(user.name) + '</h2><button class="modal-close" onclick="closeEmailModal()" aria-label="Close">×</button></div>' +
+      '<div class="modal-body">' +
+        '<div class="info-notice">📄 <strong>Step 1:</strong> Click "Print document" below. Choose "Save as PDF" in the print dialog.<br><br>📧 <strong>Step 2:</strong> Click "Open email app" — your mail client opens pre-filled. Attach the PDF and send.</div>' +
+        '<div class="form-group"><label>To (recipient)</label><input id="email-to" value="' + esc(user.email) + '" readonly /></div>' +
+        '<div class="form-group"><label>Subject</label><input id="email-subject" value="' + esc(subject) + '" /></div>' +
+        '<div class="form-group"><label>Message</label><textarea id="email-body" style="min-height:180px;font-family:inherit;">' + esc(body) + '</textarea></div>' +
+      '</div>' +
+      '<div class="modal-footer">' +
+        '<button class="btn btn-outline btn-sm" onclick="copyEmailContent()">📋 Copy all</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="reprintDocument(\'' + user.id + '\')">🖨 Print document</button>' +
+        '<button class="btn btn-accent" onclick="openMailto()">📧 Open email app</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(modal);
+}
+
+function closeEmailModal() {
+  const m = $('#email-modal');
+  if (m) m.remove();
+}
+
+function copyEmailContent() {
+  const to = $('#email-to').value;
+  const subject = $('#email-subject').value;
+  const body = $('#email-body').value;
+  const content = 'To: ' + to + '\nSubject: ' + subject + '\n\n' + body;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(content).then(() => toast('Copied to clipboard.', 'ok')).catch(() => toast('Copy failed.', 'err'));
+  } else {
+    toast('Copy not available.', 'err');
+  }
+}
+
+function openMailto() {
+  const to = $('#email-to').value;
+  const subject = $('#email-subject').value;
+  let body = $('#email-body').value;
+  body += '\n\n[Please attach the printed PDF file before sending]';
+  const mailto = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  if (mailto.length > 1900) {
+    const shortBody = body.slice(0, 800) + '\n\n[Message truncated — PDF attached separately]';
+    window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(shortBody);
+  } else {
+    window.location.href = mailto;
+  }
+  toast('Email app opened. Attach the PDF and send.', 'ok');
+}
+
+function reprintDocument(userId) {
+  const user = db.users.find(u => u.id === userId);
+  if (user) printMemberDocument(user);
+}
+
+/* ============================================================
+   ADMIN BYPASS ACTIONS
+   ============================================================ */
+function adminEnrollCourse(courseId) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  const u = currentUser();
+  const c = db.courses.find(x => x.id === courseId);
+  if (!c) return;
+  const existing = db.enrollments.find(e => e.userId === u.id && e.courseId === c.id && e.status === 'ACTIVE');
+  if (!existing) {
+    db.enrollments.push({ id: uid(), userId: u.id, courseId: c.id, completedLessons: [], status: 'ACTIVE', createdAt: Date.now(), isAdminGrant: true });
+    save();
+  }
+  toast('🛡 Admin enrollment granted.', 'ok');
+  navigate('learn', { courseId: c.id });
+}
+
+function adminActivatePlan(planId) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  const u = currentUser();
+  const plan = db.plans.find(p => p.id === planId);
+  if (!plan) return;
+  Backend.subscriptions.activate(u.id, planId);
+  toast('🛡 Admin activated: ' + plan.name, 'ok');
+  navigate('dashboard');
+}
+
+function adminGetProduct(productId) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  const u = currentUser();
+  const p = db.products.find(x => x.id === productId);
+  if (!p) return;
+  const orderId = 'ord_' + uid();
+  Backend.orders.create({
+    id: orderId, userId: u.id,
+    items: [{ title: p.title, qty: 1, price: p.price, productId: p.id }],
+    total: p.price, status: 'APPROVED',
+    bankReference: 'ADMIN-BYPASS', provider: 'KCB',
+    isAdminGrant: true,
+    createdAt: Date.now(), approvedAt: Date.now()
+  });
+  if (p.courseId) {
+    const c = db.courses.find(x => x.id === p.courseId);
+    if (c && !db.enrollments.find(e => e.userId === u.id && e.courseId === c.id)) {
+      db.enrollments.push({ id: uid(), userId: u.id, courseId: c.id, completedLessons: [], status: 'ACTIVE', createdAt: Date.now(), isAdminGrant: true });
+    }
+  }
+  save();
+  toast('🛡 Admin access granted.', 'ok');
+  render();
+}
+
+/* ============ UNREAD CHAT ============ */
+function totalUnreadChat() {
+  const u = currentUser(); if (!u) return 0;
+  let n = 0;
+  for (const conv of db.conversations) {
+    if (!conv.participants.includes(u.id)) continue;
+    for (const m of conv.messages) {
+      if (m.from !== u.id && !(m.readBy || []).includes(u.id)) n++;
+    }
+  }
+  return n;
+}
+
+/* ============ HEADER ============ */
+function Header() {
+  const u = currentUser();
+  const r = currentRoute();
+  const active = n => r.name === n ? 'active' : '';
+  const cartCount = db.cart.length;
+  const unread = totalUnreadChat();
+  const admin = isAdmin();
+  return '<header class="nav"><div class="container nav-inner">' +
+    '<a href="#" class="logo" onclick="navigate(\'home\');return false;"><div class="logo-mark">M</div> MASTATECH ' + (admin ? '<span class="badge badge-admin" style="margin-left:6px;font-size:10px;">ADMIN</span>' : '') + '</a>' +
+    '<div class="nav-links" id="navLinks">' +
+      '<a href="#" class="' + active('directory') + '" onclick="navigate(\'directory\');return false;">Directory</a>' +
+      '<a href="#" class="' + active('knowledge') + '" onclick="navigate(\'knowledge\');return false;">Knowledge</a>' +
+      '<a href="#" class="' + active('community') + '" onclick="navigate(\'community\');return false;">Community</a>' +
+      '<a href="#" class="' + active('academy') + '" onclick="navigate(\'academy\');return false;">Academy</a>' +
+      '<a href="#" class="' + active('opportunities') + '" onclick="navigate(\'opportunities\');return false;">Opportunities</a>' +
+      '<a href="#" class="' + active('store') + '" onclick="navigate(\'store\');return false;">Store</a>' +
+      '<a href="#" class="' + active('pricing') + '" onclick="navigate(\'pricing\');return false;">Pricing</a>' +
+    '</div>' +
+    '<div class="nav-actions">' +
+      '<a href="#" class="icon-btn" title="Cart" onclick="navigate(\'cart\');return false;">🛒' + (cartCount ? '<span class="dot">' + cartCount + '</span>' : '') + '</a>' +
+      (u ? '<a href="#" class="icon-btn" title="Chat" onclick="navigate(\'chat\');return false;">💬' + (unread ? '<span class="dot">' + unread + '</span>' : '') + '</a>' : '') +
+      (u
+        ? '<a href="#" class="btn btn-ghost btn-sm" onclick="navigate(\'' + (u.role === 'ADMIN' ? 'admin' : 'dashboard') + '\');return false;">' + (u.role === 'ADMIN' ? 'Admin' : 'Dashboard') + '</a>' +
+          '<a href="#" class="btn btn-outline btn-sm" onclick="logout();return false;">Logout</a>'
+        : '<a href="#" class="btn btn-outline btn-sm" onclick="navigate(\'login\');return false;">Log in</a>' +
+          '<a href="#" class="btn btn-accent btn-sm" onclick="navigate(\'register\');return false;">Join Free</a>') +
+      '<button class="mobile-menu-btn" onclick="document.getElementById(\'navLinks\').classList.toggle(\'open\')">☰</button>' +
+    '</div>' +
+  '</div></header>';
+}
+
+/* ============ FOOTER ============ */
+function Footer() {
+  return '<footer><div class="container">' +
+    '<div class="grid grid-4" style="margin-bottom:24px;">' +
+      '<div><div class="logo" style="color:#fff;"><div class="logo-mark">M</div>MASTATECH</div><p style="margin-top:12px;font-size:13px;max-width:260px;line-height:1.6;">Where businesses connect, learn and grow. Built for Africa, designed for the world.</p></div>' +
+      '<div><h4>Platform</h4>' +
+        '<a href="#" onclick="navigate(\'directory\');return false;">Directory</a>' +
+        '<a href="#" onclick="navigate(\'knowledge\');return false;">Knowledge</a>' +
+        '<a href="#" onclick="navigate(\'community\');return false;">Community</a>' +
+        '<a href="#" onclick="navigate(\'academy\');return false;">Academy</a>' +
+      '</div>' +
+      '<div><h4>Membership</h4>' +
+        '<a href="#" onclick="navigate(\'pricing\');return false;">Pricing</a>' +
+        '<a href="#" onclick="navigate(\'register\');return false;">Sign up</a>' +
+        '<a href="#" onclick="navigate(\'login\');return false;">Sign in</a>' +
+      '</div>' +
+      '<div><h4>Payments</h4><div style="font-size:13px;line-height:1.7;color:#C9D8DE;">' + BANK.bankName + '<br>Account: <strong style="color:#fff;">' + BANK.accountNumber + '</strong><br>' + BANK.accountName + '</div></div>' +
+    '</div>' +
+    '<div class="footer-bottom"><div>© 2026 MASTATECH Global</div><div>Payments via KCB Bank · Support: ' + SUPPORT_EMAIL + '</div></div>' +
+  '</div></footer>';
+}
+
+/* ============ CARD RENDERERS ============ */
+function businessCard(b) {
+  const ind = db.industries.find(i => i.id === b.industryId);
+  return '<div class="card card-hover" onclick="navigate(\'business-detail\',{slug:\'' + b.slug + '\'})">' +
+    (b.image ? '<img class="img-cover img-card" src="' + esc(b.image) + '" alt="' + esc(b.name) + '" loading="lazy" onerror="this.style.display=\'none\'"/>' : '') +
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px;"><div class="item-title" style="margin:0;">' + esc(b.name) + '</div>' + (b.verified ? '<span class="badge badge-ok">✓</span>' : '<span class="badge">Unverified</span>') + '</div>' +
+    '<div class="item-meta">' + esc(ind?.name || '') + ' · ' + esc(b.city) + ', ' + esc(b.country) + '</div>' +
+    '<p class="item-desc">' + esc(b.description) + '</p>' +
+  '</div>';
+}
+function resourceCard(r) {
+  return '<div class="card card-hover" onclick="navigate(\'resource-detail\',{id:\'' + r.id + '\'})">' +
+    (r.image ? '<img class="img-cover img-card" src="' + esc(r.image) + '" alt="' + esc(r.title) + '" loading="lazy" onerror="this.style.display=\'none\'"/>' : '') +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:8px;gap:8px;"><span class="badge badge-info">' + esc(r.type) + '</span>' + (r.verified ? '<span class="badge badge-ok">✓</span>' : '<span class="badge badge-warn">Unverified</span>') + '</div>' +
+    '<div class="item-title">' + esc(r.title) + '</div>' +
+    '<p class="item-desc">' + esc(r.description) + '</p>' +
+  '</div>';
+}
+function courseCard(c) {
+  const admin = isAdmin();
+  return '<div class="card card-hover" onclick="navigate(\'course-detail\',{id:\'' + c.id + '\'})">' +
+    '<div class="video-box">' + (c.image ? '<img src="' + esc(c.image) + '" alt="' + esc(c.title) + '" loading="lazy" onerror="this.style.display=\'none\'"/>' : '') + '<div class="play">▶</div></div>' +
+    '<div style="display:flex;justify-content:space-between;margin:10px 0;gap:8px;">' +
+      '<span class="badge badge-info">' + esc(c.level) + '</span>' +
+      (admin ? '<span class="badge badge-admin">🛡 Admin Access</span>' : '<strong style="color:var(--brand);font-family:Sora;">' + money(c.price) + '</strong>') +
+    '</div>' +
+    '<div class="item-title">' + esc(c.title) + '</div>' +
+    '<p class="item-desc">' + esc(c.description) + '</p>' +
+  '</div>';
+}
+function opportunityCard(o) {
+  return '<div class="card">' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:8px;gap:8px;"><span class="badge badge-accent">' + esc(o.type) + '</span>' + (o.verified ? '<span class="badge badge-ok">✓</span>' : '<span class="badge badge-warn">Unverified</span>') + '</div>' +
+    '<div class="item-title">' + esc(o.title) + '</div>' +
+    '<div class="item-meta">' + esc(o.organization) + ' · ' + esc(o.country) + '</div>' +
+    '<p class="item-desc">' + esc(o.description) + '</p>' +
+  '</div>';
+}
+
+/* ============ HOME ============ */
+function viewHome() {
+  return '<section class="hero"><div class="hero-bg"></div><div class="container">' +
+    '<span class="badge badge-accent" style="margin-bottom:16px;">🌍 Built for Africa · Designed for the World</span>' +
+    '<h1>Where Businesses Connect, Learn & Grow.</h1>' +
+    '<p>One platform for customers, partners, knowledge and growth — from your first customer to your next big opportunity.</p>' +
+    '<div class="cta-row">' +
+      '<a href="#" class="btn btn-accent" onclick="navigate(\'register\');return false;">Join Free →</a>' +
+      '<a href="#" class="btn btn-outline" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5);" onclick="document.getElementById(\'how\').scrollIntoView({behavior:\'smooth\'});return false;">See How It Works</a>' +
+    '</div>' +
+  '</div></section>' +
+  '<section id="how"><div class="container">' +
+    '<span class="eyebrow">The Problems We Solve</span>' +
+    '<div class="section-head"><h2>Everything a business needs to grow</h2></div>' +
+    '<div class="grid grid-4">' +
+      [['🎯','Find Customers','Be discovered. Get RFQs, leads and enquiries.','directory'],
+       ['🤝','Find Reliable Partners','Verified suppliers, consultants, and collaborators.','directory'],
+       ['🎓','Learn Business Skills','Courses, templates, and masterclasses.','academy'],
+       ['💰','Earn Referral Bonuses','KES 200 for every referral who joins MASTATECH.','dashboard']
+      ].map(([i,t,d,r]) => '<div class="feature-card" onclick="navigate(\'' + r + '\')"><div class="feature-icon">' + i + '</div><h3>' + t + '</h3><p>' + d + '</p></div>').join('') +
+    '</div>' +
+  '</div></section>' +
+  '<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);"><div class="container">' +
+    '<div class="section-head"><div><span class="eyebrow">Business Directory</span><h2>Featured businesses</h2></div><a href="#" class="btn btn-outline" onclick="navigate(\'directory\');return false;">View all →</a></div>' +
+    '<div class="grid grid-4">' + db.businesses.slice(0, 4).map(businessCard).join('') + '</div>' +
+  '</div></section>' +
+  '<section><div class="container">' +
+    '<div class="section-head"><div><span class="eyebrow">Verified Knowledge</span><h2>Learn from trusted resources</h2></div><a href="#" class="btn btn-outline" onclick="navigate(\'knowledge\');return false;">Explore →</a></div>' +
+    '<div class="grid grid-3">' + db.resources.slice(0, 3).map(resourceCard).join('') + '</div>' +
+  '</div></section>' +
+  '<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);"><div class="container">' +
+    '<div class="section-head"><div><span class="eyebrow">MASTATECH Academy</span><h2>Learn skills that grow your business</h2></div><a href="#" class="btn btn-outline" onclick="navigate(\'academy\');return false;">Browse →</a></div>' +
+    '<div class="grid grid-3">' + db.courses.slice(0, 3).map(courseCard).join('') + '</div>' +
+  '</div></section>' +
+  '<section style="background:linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);"><div class="container" style="text-align:center;">' +
+    '<h2 style="color:#fff;font-size:clamp(24px,4vw,34px);">Come with a problem. Leave with a solution.</h2>' +
+    '<p style="color:#D5E5EB;max-width:560px;margin:16px auto 28px;">Join thousands of entrepreneurs using MASTATECH to find customers, partners, knowledge and opportunities.</p>' +
+    '<a href="#" class="btn btn-accent" onclick="navigate(\'register\');return false;" style="font-size:16px;padding:14px 28px;">Create your free account →</a>' +
+  '</div></section>';
+}
+
+/* ============ DIRECTORY ============ */
+function viewDirectory(p = {}) {
+  const q = p.q || '', country = p.country || '', industry = p.industry || '';
+  const filtered = db.businesses.filter(b => {
+    if (q && !(b.name + ' ' + b.description).toLowerCase().includes(q.toLowerCase())) return false;
+    if (country && b.country !== country) return false;
+    if (industry && b.industryId !== industry) return false;
+    return true;
+  });
+  const countries = [...new Set(db.businesses.map(b => b.country))].sort();
+  return '<section class="compact"><div class="container">' +
+    '<span class="eyebrow">Business Directory</span>' +
+    '<h1 style="font-size:clamp(24px,4vw,32px);">Find verified businesses and partners</h1>' +
+    '<div class="filters">' +
+      '<input type="text" id="dir-q" placeholder="Search businesses…" value="' + esc(q) + '" />' +
+      '<select id="dir-country"><option value="">All countries</option>' + countries.map(c => '<option value="' + esc(c) + '" ' + (c === country ? 'selected' : '') + '>' + esc(c) + '</option>').join('') + '</select>' +
+      '<select id="dir-industry"><option value="">All industries</option>' + db.industries.map(i => '<option value="' + i.id + '" ' + (i.id === industry ? 'selected' : '') + '>' + esc(i.name) + '</option>').join('') + '</select>' +
+      '<button class="btn btn-primary" onclick="applyDirectoryFilters()">Search</button>' +
+    '</div>' +
+    (filtered.length ? '<div class="grid grid-3">' + filtered.map(businessCard).join('') + '</div>' : '<div class="empty"><h3>No businesses match</h3></div>') +
+  '</div></section>';
+}
+function applyDirectoryFilters() {
+  navigate('directory', { q: $('#dir-q').value.trim(), country: $('#dir-country').value, industry: $('#dir-industry').value });
+}
+function viewBusinessDetail(p) {
+  const b = db.businesses.find(x => x.slug === p.slug); if (!b) return notFound();
+  const ind = db.industries.find(i => i.id === b.industryId);
+  const owner = db.users.find(u => u.id === b.ownerId);
+  const me = currentUser();
+  return '<section><div class="container" style="max-width:880px;">' +
+    '<button class="btn btn-ghost btn-sm" onclick="navigate(\'directory\');return false;">← Directory</button>' +
+    '<div class="card" style="margin-top:16px;padding:0;overflow:hidden;">' +
+      (b.image ? '<img src="' + esc(b.image) + '" alt="' + esc(b.name) + '" style="width:100%;height:240px;object-fit:cover;" onerror="this.style.display=\'none\'"/>' : '') +
+      '<div style="padding:24px;">' +
+        '<h1 style="font-size:clamp(22px,4vw,28px);">' + esc(b.name) + '</h1>' +
+        '<div class="item-meta">' + esc(ind?.name || '') + ' · ' + esc(b.city) + ', ' + esc(b.country) + '</div>' +
+        '<div style="margin-top:8px;">' + (b.verified ? '<span class="badge badge-ok">✓ Verified</span>' : '<span class="badge badge-warn">Pending</span>') + '</div>' +
+        '<p style="color:#374151;margin:20px 0;">' + esc(b.description) + '</p>' +
+        (me && owner && me.id !== owner.id ? '<button class="btn btn-primary" onclick="startChatWith(\'' + owner.id + '\')">💬 Message owner</button>' : '') +
+      '</div>' +
+    '</div>' +
+  '</div></section>';
+}
+
+/* ============ KNOWLEDGE ============ */
+function viewKnowledge(p = {}) {
+  const type = p.type || '', q = p.q || '';
+  const filtered = db.resources.filter(r => {
+    if (type && r.type !== type) return false;
+    if (q && !(r.title + ' ' + r.description).toLowerCase().includes(q.toLowerCase())) return false;
+    return true;
+  });
+  return '<section class="compact"><div class="container">' +
+    '<span class="eyebrow">Knowledge Library</span>' +
+    '<h1 style="font-size:clamp(24px,4vw,32px);">Business resources</h1>' +
+    '<div class="filters">' +
+      '<input type="text" id="k-q" placeholder="Search…" value="' + esc(q) + '" />' +
+      '<select id="k-type"><option value="">All types</option>' + ['PDF','VIDEO','TEMPLATE','GUIDE','REPORT'].map(t => '<option value="' + t + '" ' + (t === type ? 'selected' : '') + '>' + t + '</option>').join('') + '</select>' +
+      '<button class="btn btn-primary" onclick="applyKnowledgeFilters()">Search</button>' +
+    '</div>' +
+    (filtered.length ? '<div class="grid grid-3">' + filtered.map(resourceCard).join('') + '</div>' : '<div class="empty"><h3>No resources</h3></div>') +
+  '</div></section>';
+}
+function applyKnowledgeFilters() {
+  navigate('knowledge', { q: $('#k-q').value.trim(), type: $('#k-type').value });
+}
+function viewResourceDetail(p) {
+  const r = db.resources.find(x => x.id === p.id); if (!r) return notFound();
+  return '<section><div class="container" style="max-width:780px;">' +
+    '<button class="btn btn-ghost btn-sm" onclick="navigate(\'knowledge\');return false;">← Library</button>' +
+    '<div class="card" style="margin-top:16px;">' +
+      '<span class="badge badge-info">' + esc(r.type) + '</span>' +
+      '<h1 style="font-size:clamp(22px,4vw,28px);margin:12px 0;">' + esc(r.title) + '</h1>' +
+      '<p style="color:#374151;margin-bottom:20px;">' + esc(r.description) + '</p>' +
+      '<button class="btn btn-accent" onclick="toast(\'Download started (demo)\',\'ok\')">⬇ Download ' + esc(r.type) + '</button>' +
+    '</div>' +
+  '</div></section>';
+}
+
+/* ============ COMMUNITY ============ */
+function viewCommunity() {
+  return '<section class="compact"><div class="container">' +
+    '<div class="section-head"><div><span class="eyebrow">Community</span><h1 style="font-size:clamp(24px,4vw,32px);">Discussions</h1></div><button class="btn btn-accent" onclick="showNewDiscussion()">+ Start</button></div>' +
+    '<div id="new-discussion-wrap" style="display:none;margin-bottom:24px;"><div class="card"><div class="form-group"><label>Title</label><input id="d-title" /></div><div class="form-group"><label>Body</label><textarea id="d-body"></textarea></div><div style="display:flex;gap:10px;justify-content:flex-end;"><button class="btn btn-outline" onclick="showNewDiscussion(false)">Cancel</button><button class="btn btn-primary" onclick="createDiscussion()">Publish</button></div></div></div>' +
+    '<div class="grid" style="gap:14px;">' +
+      db.discussions.slice().sort((a, b) => b.createdAt - a.createdAt).map(d => {
+        const u = db.users.find(x => x.id === d.authorId);
+        const admin = isAdmin();
+        return '<div class="card">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">' +
+            '<div><span class="badge badge-info">' + esc(d.category || 'General') + '</span></div>' +
+            '<div style="display:flex;gap:6px;"><span class="item-meta">' + new Date(d.createdAt).toLocaleDateString() + '</span>' + (admin ? '<button class="btn btn-danger-outline btn-xs" onclick="deleteDiscussion(\'' + d.id + '\')">🗑</button>' : '') + '</div>' +
+          '</div>' +
+          '<div onclick="navigate(\'discussion-detail\',{id:\'' + d.id + '\'})" style="cursor:pointer;margin-top:8px;">' +
+            '<div class="item-title">' + esc(d.title) + '</div>' +
+            '<p class="item-desc">' + esc(d.body) + '</p>' +
+            '<div class="item-meta">By ' + esc(u?.name || 'Unknown') + ' · 💬 ' + d.replies + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>' +
+  '</div></section>';
+}
+function showNewDiscussion(show = true) { $('#new-discussion-wrap').style.display = show ? 'block' : 'none'; }
+function createDiscussion() {
+  if (!currentUser()) return toast('Log in first.', 'err');
+  const title = $('#d-title').value.trim(), body = $('#d-body').value.trim();
+  if (title.length < 5) return toast('Title too short.', 'err');
+  if (body.length < 10) return toast('Add more detail.', 'err');
+  Backend.discussions.create({ id: uid(), authorId: currentUser().id, title, slug: slugify(title) + '-' + uid(), body, category: 'General', replies: 0, createdAt: Date.now(), isPinned: false });
+  toast('Published.', 'ok'); render();
+}
+function deleteDiscussion(id) {
+  if (!confirm('Delete?')) return;
+  Backend.discussions.delete(id);
+  toast('Deleted.', 'ok'); render();
+}
+function viewDiscussionDetail(p) {
+  const d = db.discussions.find(x => x.id === p.id); if (!d) return notFound();
+  const u = db.users.find(x => x.id === d.authorId);
+  const comments = db.comments[d.id] || [];
+  return '<section><div class="container" style="max-width:820px;">' +
+    '<button class="btn btn-ghost btn-sm" onclick="navigate(\'community\');return false;">← Back</button>' +
+    '<div class="card" style="margin-top:16px;"><h1 style="font-size:clamp(22px,4vw,26px);margin:12px 0;">' + esc(d.title) + '</h1><div class="item-meta">By ' + esc(u?.name || 'Unknown') + ' · ' + new Date(d.createdAt).toLocaleDateString() + '</div><p style="color:#374151;margin-top:12px;">' + esc(d.body) + '</p></div>' +
+    comments.map(c => {
+      const au = db.users.find(x => x.id === c.authorId);
+      return '<div class="card" style="margin-top:12px;"><div class="item-meta">' + esc(au?.name || 'Unknown') + '</div><p>' + esc(c.body) + '</p></div>';
+    }).join('') +
+    '<div class="card" style="margin-top:20px;"><textarea id="reply-body" placeholder="Your reply…"></textarea><div style="margin-top:12px;text-align:right;"><button class="btn btn-primary" onclick="addReply(\'' + d.id + '\')">Post</button></div></div>' +
+  '</div></section>';
+}
+function addReply(discussionId) {
+  if (!currentUser()) return toast('Log in.', 'err');
+  const body = $('#reply-body').value.trim();
+  if (body.length < 5) return toast('Too short.', 'err');
+  if (!db.comments[discussionId]) db.comments[discussionId] = [];
+  db.comments[discussionId].push({ id: uid(), authorId: currentUser().id, body, createdAt: Date.now() });
+  const d = db.discussions.find(x => x.id === discussionId); d.replies++;
+  save(); render();
+}
+
+/* ============ OPPORTUNITIES ============ */
+function viewOpportunities() {
+  return '<section class="compact"><div class="container"><span class="eyebrow">Opportunities</span><h1 style="font-size:clamp(24px,4vw,32px);">Tenders, grants & partnerships</h1><div class="grid grid-3" style="margin-top:24px;">' + db.opportunities.map(opportunityCard).join('') + '</div></div></section>';
+}
+
+/* ============ ACADEMY ============ */
+function viewAcademy() {
+  const admin = isAdmin();
+  return '<section class="compact"><div class="container">' +
+    (admin ? '<div class="admin-notice">🛡 You have full admin access to all courses — no payment required.</div>' : '') +
+    '<span class="eyebrow">MASTATECH Academy</span>' +
+    '<h1 style="font-size:clamp(24px,4vw,32px);">Courses for growing businesses</h1>' +
+    '<div class="grid grid-3" style="margin-top:24px;">' + db.courses.map(courseCard).join('') + '</div>' +
+  '</div></section>';
+}
+function viewCourseDetail(p) {
+  const c = db.courses.find(x => x.id === p.id); if (!c) return notFound();
+  const u = currentUser();
+  const admin = isAdmin();
+  const enrolled = u && db.enrollments.find(e => e.userId === u.id && e.courseId === c.id && e.status === 'ACTIVE');
+  let priceBlock = '';
+  if (admin) {
+    priceBlock = '<div class="admin-notice">🛡 Admin access — this course is free for you.</div>' +
+      '<button class="btn btn-admin btn-block" onclick="adminEnrollCourse(\'' + c.id + '\')">🛡 Start as Admin</button>';
+  } else if (enrolled) {
+    priceBlock = '<button class="btn btn-primary btn-block" onclick="navigate(\'learn\',{courseId:\'' + c.id + '\'})">Continue →</button>';
+  } else {
+    priceBlock = '<div style="font-family:Sora;font-weight:800;font-size:28px;color:var(--brand-dark);margin-bottom:8px;">' + money(c.price) + '</div>' +
+      '<button class="btn btn-accent btn-block" onclick="enrollCourse(\'' + c.id + '\')">Enroll now</button>';
+  }
+  return '<section><div class="container" style="max-width:900px;">' +
+    '<button class="btn btn-ghost btn-sm" onclick="navigate(\'academy\');return false;">← Academy</button>' +
+    '<div class="grid grid-2" style="margin-top:16px;">' +
+      '<div><div class="video-box" style="margin-bottom:16px;">' + (c.image ? '<img src="' + esc(c.image) + '" alt="' + esc(c.title) + '"/>' : '') + '<div class="play">▶</div></div>' +
+        '<h1 style="font-size:clamp(22px,4vw,28px);margin-bottom:12px;">' + esc(c.title) + '</h1><p style="color:#374151;">' + esc(c.description) + '</p></div>' +
+      '<div class="card">' + priceBlock + '</div>' +
+    '</div>' +
+  '</div></section>';
+}
+function enrollCourse(id) {
+  const u = currentUser(); if (!u) return toast('Log in.', 'err');
+  const c = db.courses.find(x => x.id === id); if (!c) return;
+  if (isAdmin()) return adminEnrollCourse(id);
+  if (c.price > 0) { navigate('pay-course', { courseId: c.id }); return; }
+  db.enrollments.push({ id: uid(), userId: u.id, courseId: c.id, completedLessons: [], status: 'ACTIVE', createdAt: Date.now() });
+  save(); toast('Enrolled!', 'ok'); navigate('learn', { courseId: c.id });
+}
+function viewLearn(p) {
+  const u = currentUser(); if (!u) { navigate('login'); return ''; }
+  const c = db.courses.find(x => x.id === p.courseId); if (!c) return notFound();
+  const e = db.enrollments.find(x => x.userId === u.id && x.courseId === c.id && x.status === 'ACTIVE');
+  if (!e) return '<section><div class="container"><div class="empty"><h3>Access pending</h3></div></div></section>';
+  return '<section><div class="container" style="max-width:900px;">' +
+    '<h1 style="font-size:clamp(22px,4vw,26px);">' + esc(c.title) + '</h1>' +
+    c.lessons.map((l, i) => {
+      const done = e.completedLessons.includes(l.id);
+      return '<div class="card" style="margin-top:14px;"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong>' + (i + 1) + '. ' + esc(l.title) + '</strong><p style="color:#4B5563;font-size:14px;margin-top:6px;">' + esc(l.content) + '</p></div><div>' + (done ? '<span class="badge badge-ok">✓</span>' : '<button class="btn btn-primary btn-sm" onclick="completeLesson(\'' + c.id + '\',\'' + l.id + '\')">Complete</button>') + '</div></div></div>';
+    }).join('') +
+  '</div></section>';
+}
+function completeLesson(courseId, lessonId) {
+  const u = currentUser(); if (!u) return;
+  const e = db.enrollments.find(x => x.userId === u.id && x.courseId === courseId);
+  if (!e) return;
+  if (!e.completedLessons.includes(lessonId)) e.completedLessons.push(lessonId);
+  save(); render();
+}
+
+/* ============ STORE ============ */
+function viewStore() {
+  const admin = isAdmin();
+  return '<section class="compact"><div class="container">' +
+    (admin ? '<div class="admin-notice">🛡 You have full admin access to all products — no payment required.</div>' : '') +
+    '<div class="section-head"><div><span class="eyebrow">Store</span><h1 style="font-size:clamp(24px,4vw,32px);">Digital products</h1></div>' +
+    (admin ? '' : '<a href="#" class="btn btn-outline" onclick="navigate(\'cart\');return false;">Cart (' + db.cart.length + ')</a>') + '</div>' +
+    '<div class="grid grid-3">' +
+      db.products.map(p => '<div class="card">' +
+        (p.image ? '<img class="img-cover img-card" src="' + esc(p.image) + '" alt="' + esc(p.title) + '"/>' : '') +
+        '<span class="badge badge-info">' + esc(p.type) + '</span>' +
+        '<div class="item-title" style="margin-top:10px;">' + esc(p.title) + '</div>' +
+        '<p class="item-desc">' + esc(p.description) + '</p>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+          (admin
+            ? '<span class="badge badge-admin">🛡 Admin</span><button class="btn btn-admin btn-sm" onclick="adminGetProduct(\'' + p.id + '\')">Get as Admin</button>'
+            : '<strong style="color:var(--brand);font-family:Sora;font-size:18px;">' + money(p.price) + '</strong><button class="btn btn-primary btn-sm" onclick="addToCart(\'' + p.id + '\')">Add to cart</button>') +
+        '</div>' +
+      '</div>').join('') +
+    '</div>' +
+  '</div></section>';
+}
+function addToCart(productId) {
+  if (!currentUser()) return toast('Log in.', 'err');
+  if (isAdmin()) return adminGetProduct(productId);
+  const e = db.cart.find(c => c.productId === productId);
+  if (e) e.qty++; else db.cart.push({ productId, qty: 1 });
+  save(); toast('Added.', 'ok'); render();
+}
+function viewCart() {
+  const items = db.cart.map(c => {
+    const p = db.products.find(x => x.id === c.productId);
+    return p ? { ...c, product: p } : null;
+  }).filter(Boolean);
+  const total = items.reduce((s, i) => s + i.product.price * i.qty, 0);
+  return '<section class="compact"><div class="container" style="max-width:800px;">' +
+    '<h1 style="font-size:clamp(22px,4vw,28px);margin-bottom:24px;">Your cart (' + items.length + ')</h1>' +
+    (items.length === 0
+      ? '<div class="empty"><h3>Cart empty</h3><button class="btn btn-primary" style="margin-top:16px;" onclick="navigate(\'store\');return false;">Browse store</button></div>'
+      : '<div class="card">' +
+        items.map(i => '<div class="cart-row"><div><strong>' + esc(i.product.title) + '</strong><div class="item-meta">×' + i.qty + '</div></div><div style="font-weight:700;color:var(--brand);">' + money(i.product.price * i.qty) + '</div><button class="btn btn-ghost btn-sm" onclick="removeFromCart(\'' + i.productId + '\')">Remove</button></div>').join('') +
+        '<div style="display:flex;justify-content:space-between;padding-top:20px;"><h3>Total</h3><h3 style="color:var(--brand);">' + money(total) + '</h3></div>' +
+        '<button class="btn btn-kcb btn-block" style="margin-top:16px;" onclick="navigate(\'checkout\');return false;">Checkout via KCB →</button>' +
+      '</div>') +
+  '</div></section>';
+}
+function removeFromCart(productId) {
+  db.cart = db.cart.filter(c => c.productId !== productId);
+  save(); render();
+}
+function viewCheckout() {
+  const u = currentUser(); if (!u) { navigate('login'); return ''; }
+  const items = db.cart.map(c => {
+    const p = db.products.find(x => x.id === c.productId);
+    return p ? { ...c, product: p } : null;
+  }).filter(Boolean);
+  const total = items.reduce((s, i) => s + i.product.price * i.qty, 0);
+  if (items.length === 0) { navigate('cart'); return ''; }
+  return '<section class="compact"><div class="container" style="max-width:720px;">' +
+    '<h1 style="font-size:clamp(22px,4vw,28px);margin-bottom:12px;">Checkout — KCB Bank Transfer</h1>' +
+    '<div class="info-notice">After transferring, submit the reference below. Admin will verify.</div>' +
+    '<div class="kcb-box"><h3>Transfer to</h3><div class="acc">' + BANK.accountNumber + '</div><div class="row"><span>Bank</span><strong>' + esc(BANK.bankName) + '</strong></div><div class="row"><span>Account name</span><strong>' + esc(BANK.accountName) + '</strong></div><div class="row" style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.2);"><span>Amount</span><strong>' + money(total) + '</strong></div></div>' +
+    '<div class="card"><div class="form-group"><label>Bank reference *</label><input id="pay-ref" /></div><div class="form-group"><label>Notes</label><textarea id="pay-notes"></textarea></div><button class="btn btn-kcb btn-block" onclick="submitBankPayment(' + total + ')">Submit</button></div>' +
+  '</div></section>';
+}
+function submitBankPayment(total) {
+  const u = currentUser(); if (!u) return;
+  const ref = $('#pay-ref').value.trim();
+  if (ref.length < 4) return toast('Enter reference.', 'err');
+  const items = db.cart.map(c => {
+    const p = db.products.find(x => x.id === c.productId);
+    return p ? { ...c, product: p } : null;
+  }).filter(Boolean);
+  const orderId = 'ord_' + uid();
+  Backend.orders.create({ id: orderId, userId: u.id, items: items.map(i => ({ title: i.product.title, qty: i.qty, price: i.product.price, productId: i.productId })), total, status: 'PENDING_VERIFICATION', bankReference: ref, notes: $('#pay-notes').value.trim(), provider: 'KCB', createdAt: Date.now() });
+  db.users.filter(x => x.role === 'ADMIN').forEach(adm => Backend.notifications.create({ id: uid(), userId: adm.id, title: 'New payment', body: u.name + ' ref ' + ref, createdAt: Date.now(), read: false }));
+  db.cart = []; save(); toast('Submitted.', 'kcb'); navigate('dashboard');
+}
+function viewPayCourse(p) {
+  const u = currentUser(); if (!u) { navigate('login'); return ''; }
+  const c = db.courses.find(x => x.id === p.courseId); if (!c) return notFound();
+  if (isAdmin()) { adminEnrollCourse(c.id); return ''; }
+  return '<section class="compact"><div class="container" style="max-width:720px;">' +
+    '<h1 style="font-size:clamp(22px,4vw,28px);margin-bottom:12px;">Enroll — ' + esc(c.title) + '</h1>' +
+    '<div class="kcb-box"><div class="acc">' + BANK.accountNumber + '</div><div class="row"><span>Amount</span><strong>' + money(c.price) + '</strong></div></div>' +
+    '<div class="card"><div class="form-group"><label>Bank reference *</label><input id="pay-ref" /></div><button class="btn btn-kcb btn-block" onclick="submitCoursePayment(\'' + c.id + '\',' + c.price + ')">Submit</button></div>' +
+  '</div></section>';
+}
+function submitCoursePayment(courseId, price) {
+  const u = currentUser(); if (!u) return;
+  const ref = $('#pay-ref').value.trim();
+  if (ref.length < 4) return toast('Enter ref.', 'err');
+  const c = db.courses.find(x => x.id === courseId);
+  const orderId = 'ord_' + uid();
+  Backend.orders.create({ id: orderId, userId: u.id, items: [{ title: c.title, qty: 1, price, courseId: c.id }], total: price, status: 'PENDING_VERIFICATION', bankReference: ref, provider: 'KCB', createdAt: Date.now() });
+  db.users.filter(x => x.role === 'ADMIN').forEach(adm => Backend.notifications.create({ id: uid(), userId: adm.id, title: 'New course payment', body: u.name + ' ref ' + ref, createdAt: Date.now(), read: false }));
+  save(); toast('Submitted.', 'kcb'); navigate('dashboard');
+}
+function viewPayPlan(p) {
+  const u = currentUser(); if (!u) { navigate('login'); return ''; }
+  const plan = db.plans.find(x => x.id === p.planId); if (!plan) return notFound();
+  if (isAdmin()) { adminActivatePlan(plan.id); return ''; }
+  return '<section class="compact"><div class="container" style="max-width:720px;">' +
+    '<h1 style="font-size:clamp(22px,4vw,28px);margin-bottom:12px;">Activate ' + esc(plan.name) + '</h1>' +
+    '<div class="kcb-box"><div class="acc">' + BANK.accountNumber + '</div><div class="row"><span>Amount</span><strong>' + money(plan.monthly) + '/mo</strong></div></div>' +
+    '<div class="card"><div class="form-group"><label>Bank reference *</label><input id="pay-ref" /></div><button class="btn btn-kcb btn-block" onclick="submitPlanPayment(\'' + plan.id + '\',' + plan.monthly + ')">Submit</button></div>' +
+  '</div></section>';
+}
+function submitPlanPayment(planId, amount) {
+  const u = currentUser(); if (!u) return;
+  const ref = $('#pay-ref').value.trim();
+  if (ref.length < 4) return toast('Enter ref.', 'err');
+  const plan = db.plans.find(x => x.id === planId);
+  const orderId = 'ord_' + uid();
+  Backend.orders.create({ id: orderId, userId: u.id, items: [{ title: plan.name + ' subscription', qty: 1, price: amount, planId }], total: amount, status: 'PENDING_VERIFICATION', bankReference: ref, provider: 'KCB', kind: 'SUBSCRIPTION', createdAt: Date.now() });
+  db.users.filter(x => x.role === 'ADMIN').forEach(adm => Backend.notifications.create({ id: uid(), userId: adm.id, title: 'New plan payment', body: u.name + ' ref ' + ref, createdAt: Date.now(), read: false }));
+  save(); toast('Submitted.', 'kcb'); navigate('dashboard');
+}
+function viewPricing() {
+  const admin = isAdmin();
+  return '<section class="compact"><div class="container">' +
+    '<div style="text-align:center;margin-bottom:32px;"><span class="eyebrow">Membership</span><h1 style="font-size:clamp(24px,4vw,34px);">Choose your plan</h1></div>' +
+    (admin ? '<div class="admin-notice">🛡 You have full admin access to all plans. Click any plan to activate it for free.</div>' : '') +
+    '<div class="pricing-grid">' +
+      db.plans.map(p => '<div class="card plan-card ' + (p.featured ? 'featured' : '') + '">' +
+        (p.featured ? '<div class="ribbon">Popular</div>' : '') +
+        '<div class="plan-name">' + esc(p.name) + '</div>' +
+        '<div class="plan-price">' + (p.monthly === 0 ? 'Free' : money(p.monthly)) + '<span>' + (p.monthly === 0 ? '' : '/mo') + '</span></div>' +
+        '<ul>' + p.features.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>' +
+        (admin
+          ? '<button class="btn btn-admin btn-block" onclick="adminActivatePlan(\'' + p.id + '\')">🛡 Activate as Admin</button>'
+          : '<button class="btn ' + (p.featured ? 'btn-accent' : 'btn-outline') + ' btn-block" onclick="choosePlan(\'' + p.id + '\')">' + (p.monthly === 0 ? 'Start free' : 'Choose') + '</button>') +
+      '</div>').join('') +
+    '</div>' +
+  '</div></section>';
+}
+function choosePlan(planId) {
+  const u = currentUser();
+  if (!u) { navigate('register'); return; }
+  if (isAdmin()) return adminActivatePlan(planId);
+  const plan = db.plans.find(p => p.id === planId);
+  if (plan.monthly > 0) { navigate('pay-plan', { planId }); return; }
+  Backend.subscriptions.activate(u.id, planId);
+  toast(plan.name + ' activated.', 'ok'); navigate('dashboard');
+}
+
+/* ============ AUTH ============ */
+function viewLogin() {
+  return '<div class="auth-shell"><div class="auth-card card">' +
+    '<h2>Welcome back</h2><p class="sub">Log in to your ' + APP_NAME + ' account</p>' +
+    '<div class="form-group"><label>Email</label><input id="login-email" type="email" autocomplete="email" /></div>' +
+    '<div class="form-group"><label>Password</label><input id="login-password" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')doLogin()" /></div>' +
+    '<div id="login-error"></div>' +
+    '<button class="btn btn-accent btn-block" onclick="doLogin()">Sign in</button>' +
+    '<div style="text-align:center;margin-top:20px;font-size:14px;color:var(--muted);">New here? <a href="#" onclick="navigate(\'register\');return false;" style="color:var(--brand);font-weight:600;">Create account</a></div>' +
+  '</div></div>';
+}
+function doLogin() {
+  const email = $('#login-email').value.trim().toLowerCase();
+  const password = $('#login-password').value;
+  if (!email || !password) return $('#login-error').innerHTML = '<div class="form-error">Enter email and password.</div>';
+  const record = Backend.passwords.verify(email, password);
+  if (!record) return $('#login-error').innerHTML = '<div class="form-error">Incorrect email or password.</div>';
+  let user = db.users.find(x => x.email.toLowerCase() === email);
+  if (!user) {
+    user = { id: 'u_' + uid(), name: record.name || email.split('@')[0], email, password, phone: '', role: record.role || 'USER', country: '', city: '', headline: 'MASTATECH member', referralCode: generateReferralCode(), referredBy: null, referralEarnings: 0, createdAt: Date.now() };
+    db.users.push(user); save();
+  }
+  login(user);
+  toast('Welcome, ' + user.name.split(' ')[0] + '!', 'ok');
+  navigate(user.role === 'ADMIN' ? 'admin' : 'dashboard');
+}
+function viewRegister() {
+  const countryOptions = getAllCountriesList().map(c => '<option value="' + esc(c) + '">' + esc(c) + '</option>').join('');
+  return '<div class="auth-shell"><div class="auth-card card">' +
+    '<h2>Join ' + APP_NAME + '</h2>' +
+    '<div class="gold-notice">💰 Earn KES 200 for every friend who joins using your referral code!</div>' +
+    '<div class="form-group"><label>Full name *</label><input id="reg-name" autocomplete="name" /></div>' +
+    '<div class="form-group"><label>Email *</label><input id="reg-email" type="email" autocomplete="email" /></div>' +
+    '<div class="form-group"><label>Password *</label><input id="reg-password" type="password" autocomplete="new-password" placeholder="Minimum 8 characters" /></div>' +
+    '<div class="form-group"><label>Phone number *</label><input id="reg-phone" type="tel" placeholder="+254 712 345 678" oninput="autoDetectCountry(this.value)" /><div class="form-hint">Include country code. Country auto-detects.</div></div>' +
+    '<div class="grid grid-2" style="gap:12px;">' +
+      '<div class="form-group"><label>Country *</label><select id="reg-country"><option value="">Select…</option>' + countryOptions + '<option value="Other">Other</option></select></div>' +
+      '<div class="form-group"><label>City</label><input id="reg-city" /></div>' +
+    '</div>' +
+    '<div class="form-group"><label>I am a…</label><select id="reg-role"><option value="USER">Professional / Entrepreneur</option><option value="BUSINESS_OWNER">Business Owner</option><option value="INSTRUCTOR">Instructor</option></select></div>' +
+    '<div class="form-group"><label>Referral code (optional)</label><input id="reg-referral" placeholder="e.g. MST-ABC123" style="text-transform:uppercase;" /><div class="form-hint">Enter a friend\'s code to credit them KES 200</div></div>' +
+    '<div id="reg-error"></div>' +
+    '<button class="btn btn-accent btn-block" onclick="doRegister()">Create account</button>' +
+    '<div style="text-align:center;margin-top:20px;font-size:14px;color:var(--muted);">Already have one? <a href="#" onclick="navigate(\'login\');return false;" style="color:var(--brand);font-weight:600;">Sign in</a></div>' +
+  '</div></div>';
+}
+function autoDetectCountry(phone) {
+  const country = detectCountryFromPhone(phone);
+  if (!country) return;
+  const sel = $('#reg-country');
+  if (!sel) return;
+  for (const opt of sel.options) {
+    if (opt.value === country) { sel.value = country; return; }
+  }
+  const newOpt = document.createElement('option');
+  newOpt.value = country; newOpt.textContent = country;
+  sel.insertBefore(newOpt, sel.lastElementChild);
+  sel.value = country;
+}
+function doRegister() {
+  const name = $('#reg-name').value.trim();
+  const email = $('#reg-email').value.trim().toLowerCase();
+  const password = $('#reg-password').value;
+  const phone = $('#reg-phone').value.trim();
+  const country = $('#reg-country').value;
+  const city = $('#reg-city').value.trim();
+  const role = $('#reg-role').value;
+  const refCode = $('#reg-referral').value.trim().toUpperCase();
+
+  if (name.length < 2) return $('#reg-error').innerHTML = '<div class="form-error">Full name required.</div>';
+  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) return $('#reg-error').innerHTML = '<div class="form-error">Valid email required.</div>';
+  if (password.length < 8) return $('#reg-error').innerHTML = '<div class="form-error">Password must be 8+ characters.</div>';
+  const phoneDigits = phone.replace(/\D/g, '');
+  if (phoneDigits.length < 8) return $('#reg-error').innerHTML = '<div class="form-error">Valid phone required (min 8 digits).</div>';
+  if (phoneDigits.length > 15) return $('#reg-error').innerHTML = '<div class="form-error">Phone too long.</div>';
+  if (!country) return $('#reg-error').innerHTML = '<div class="form-error">Select your country.</div>';
+  if (db.users.find(u => u.email.toLowerCase() === email)) return $('#reg-error').innerHTML = '<div class="form-error">Email already registered.</div>';
+  if (email === ADMIN_EMAIL.toLowerCase()) return $('#reg-error').innerHTML = '<div class="form-error">This email is reserved.</div>';
+
+  // Validate referral code if provided
+  let referrer = null;
+  if (refCode) {
+    referrer = db.users.find(x => (x.referralCode || '').toUpperCase() === refCode);
+    if (!referrer) return $('#reg-error').innerHTML = '<div class="form-error">Invalid referral code.</div>';
+    if (referrer.email.toLowerCase() === email) return $('#reg-error').innerHTML = '<div class="form-error">You cannot refer yourself.</div>';
+  }
+
+  const myReferralCode = generateReferralCode();
+  const u = {
+    id: uid(), name, email, password, phone, role, country, city,
+    headline: 'MASTATECH member',
+    avatar: null,
+    referralCode: myReferralCode,
+    referredBy: referrer ? referrer.id : null,
+    referralEarnings: 0,
+    createdAt: Date.now()
+  };
+  Backend.users.create(u);
+
+  if (referrer) {
+    // Credit referrer
+    referrer.referralEarnings = (referrer.referralEarnings || 0) + REFERRAL_BONUS;
+    Backend.referrals.create({
+      id: uid(),
+      referrerId: referrer.id,
+      referredUserId: u.id,
+      amount: REFERRAL_BONUS,
+      status: 'PENDING',
+      createdAt: Date.now(),
+      paidAt: null
+    });
+    Backend.notifications.create({
+      id: uid(), userId: referrer.id,
+      title: '🎉 New referral!',
+      body: u.name + ' joined using your code. You earned ' + money(REFERRAL_BONUS) + '.',
+      createdAt: Date.now(), read: false
+    });
+    save();
+  }
+
+  Backend.subscriptions.activate(u.id, 'free');
+  Backend.notifications.create({
+    id: uid(), userId: u.id,
+    title: 'Welcome to ' + APP_NAME,
+    body: 'Your account is ready. Share your referral code ' + myReferralCode + ' to earn ' + money(REFERRAL_BONUS) + ' per signup!',
+    createdAt: Date.now(), read: false
+  });
+  login(u);
+  toast('Welcome! Your code: ' + myReferralCode, 'ok');
+  navigate('dashboard');
+}
+
+/* ============ DASHBOARD ============ */
+function viewDashboard() {
+  const u = currentUser(); if (!u) { navigate('login'); return ''; }
+  const subs = Backend.subscriptions.byUser(u.id);
+  const sub = subs[0];
+  const plan = sub ? db.plans.find(p => p.id === sub.planId) : db.plans[0];
+  const myBusinesses = db.businesses.filter(b => b.ownerId === u.id);
+  const myEnrollments = db.enrollments.filter(e => e.userId === u.id && e.status === 'ACTIVE');
+  const myOrders = Backend.orders.byUser(u.id);
+  const myNotifications = Backend.notifications.byUser(u.id).sort((a, b) => b.createdAt - a.createdAt);
+  const unreadChat = totalUnreadChat();
+
+  // Referral data
+  const myReferrals = Backend.referrals.byReferrer(u.id);
+  const totalRefEarnings = myReferrals.reduce((s, r) => s + r.amount, 0);
+  const pendingRefEarnings = myReferrals.filter(r => r.status === 'PENDING').reduce((s, r) => s + r.amount, 0);
+  const paidRefEarnings = myReferrals.filter(r => r.status === 'PAID').reduce((s, r) => s + r.amount, 0);
+
+  const refLink = 'masatech.io/?ref=' + (u.referralCode || '');
+
+  return '<section class="compact"><div class="container">' +
+    '<div class="section-head"><div><h1 style="font-size:clamp(22px,4vw,28px);">Welcome, ' + esc(u.name) + '</h1><p style="color:var(--muted);margin-top:6px;">' + esc(u.headline || '') + ' · ' + esc(u.city || '') + (u.city && u.country ? ', ' : '') + esc(u.country || '') + '</p></div></div>' +
+
+    '<div class="stat-row">' +
+      '<div class="stat"><div class="label">Plan</div><div class="value" style="font-size:18px;">' + esc(plan.name) + '</div></div>' +
+      '<div class="stat"><div class="label">Businesses</div><div class="value">' + myBusinesses.length + '</div></div>' +
+      '<div class="stat"><div class="label">Courses</div><div class="value">' + myEnrollments.length + '</div></div>' +
+      '<div class="stat"><div class="label">Orders</div><div class="value">' + myOrders.length + '</div></div>' +
+    '</div>' +
+
+    '<div class="info-notice">📄 Your official MASTATECH member document is generated by our administration. It will be emailed to <strong>' + esc(u.email) + '</strong>.</div>' +
+
+    // REFERRAL PROGRAM CARD
+    '<div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:2px solid #D97706;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;">' +
+        '<div><h2 style="font-size:22px;color:#78350F;">💰 Referral Program</h2>' +
+        '<p style="color:#92400E;font-size:14px;margin-top:4px;">Earn <strong>' + money(REFERRAL_BONUS) + '</strong> for every person who joins MASTATECH using your code.</p></div>' +
+        '<span class="badge badge-gold" style="font-size:12px;padding:6px 12px;">KES 200 per referral</span>' +
+      '</div>' +
+
+      '<div class="referral-code-box">' +
+        '<div><div style="font-size:12px;color:#78350F;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Your referral code</div>' +
+        '<code>' + esc(u.referralCode || 'MST-XXXX') + '</code></div>' +
+        '<button class="btn btn-outline btn-sm" onclick="copyReferralCode()">📋 Copy</button>' +
+      '</div>' +
+
+      '<div style="font-size:12px;color:#78350F;margin:8px 0 4px;">Your share link:</div>' +
+      '<div class="referral-link">' + esc(refLink) + ' <button onclick="copyReferralLink()" style="background:none;border:none;cursor:pointer;color:#B8860B;font-weight:700;margin-left:6px;">Copy</button></div>' +
+
+      '<div class="stat-row" style="margin-top:16px;">' +
+        '<div class="stat" style="background:#fff;"><div class="label">Total referrals</div><div class="value">' + myReferrals.length + '</div></div>' +
+        '<div class="stat" style="background:#fff;"><div class="label">Total earned</div><div class="value" style="color:#B8860B;">' + money(totalRefEarnings) + '</div></div>' +
+        '<div class="stat" style="background:#fff;"><div class="label">Pending payout</div><div class="value" style="color:var(--warn);">' + money(pendingRefEarnings) + '</div></div>' +
+        '<div class="stat" style="background:#fff;"><div class="label">Paid out</div><div class="value" style="color:var(--ok);">' + money(paidRefEarnings) + '</div></div>' +
+      '</div>' +
+
+      '<h3 style="margin-top:20px;margin-bottom:8px;font-size:16px;color:#78350F;">Your referrals</h3>' +
+      (myReferrals.length === 0
+        ? '<p style="color:#92400E;font-size:14px;">No referrals yet. Share your code with friends and start earning!</p>'
+        : myReferrals.slice().reverse().map(r => {
+            const referred = db.users.find(x => x.id === r.referredUserId);
+            return '<div class="record-row" style="border-color:#FDE68A;">' +
+              '<div class="record-body"><strong>' + esc(referred?.name || 'Unknown') + '</strong><div class="item-meta">Joined ' + new Date(r.createdAt).toLocaleDateString() + '</div></div>' +
+              '<div style="display:flex;align-items:center;gap:8px;"><strong style="color:#B8860B;">' + money(r.amount) + '</strong><span class="badge ' + (r.status === 'PAID' ? 'badge-ok' : 'badge-warn') + '">' + r.status + '</span></div>' +
+            '</div>';
+          }).join('')) +
+    '</div>' +
+
+    '<div class="dash-grid">' +
+      '<aside class="dash-side">' +
+        '<button class="active">📊 Overview</button>' +
+        '<button onclick="navigate(\'chat\');return false;">💬 Messages ' + (unreadChat ? '<span class="badge badge-demo" style="margin-left:6px;">' + unreadChat + '</span>' : '') + '</button>' +
+        '<button onclick="navigate(\'pricing\');return false;">💳 Billing</button>' +
+      '</aside>' +
+      '<div>' +
+        '<div class="card" style="margin-bottom:16px;">' +
+          '<h3 style="margin-bottom:12px;">My businesses</h3>' +
+          (myBusinesses.length === 0 ? '<p style="color:var(--muted);margin-bottom:12px;">None yet.</p>' : myBusinesses.map(b => '<div style="padding:10px 0;border-bottom:1px solid var(--line);"><strong>' + esc(b.name) + '</strong> ' + (b.verified ? '<span class="badge badge-ok">Verified</span>' : '<span class="badge badge-warn">Pending</span>') + '</div>').join('')) +
+          '<button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="showNewBusiness()">+ Create business</button>' +
+          '<div id="new-biz-wrap" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">' +
+            '<div class="form-group"><label>Business name</label><input id="nb-name" /></div>' +
+            '<div class="form-group"><label>Description</label><textarea id="nb-desc"></textarea></div>' +
+            '<div class="grid grid-2" style="gap:12px;"><div class="form-group"><label>Country</label><input id="nb-country" value="' + esc(u.country || '') + '" /></div><div class="form-group"><label>City</label><input id="nb-city" value="' + esc(u.city || '') + '" /></div></div>' +
+            '<div class="form-group"><label>Industry</label><select id="nb-industry">' + db.industries.map(i => '<option value="' + i.id + '">' + esc(i.name) + '</option>').join('') + '</select></div>' +
+            '<button class="btn btn-primary" onclick="createBusiness()">Create</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="card" style="margin-bottom:16px;">' +
+          '<h3 style="margin-bottom:12px;">My orders</h3>' +
+          (myOrders.length === 0 ? '<p style="color:var(--muted);">None yet.</p>' : myOrders.slice().reverse().map(o =>
+            '<div class="record-row">' +
+              '<div class="record-body"><strong>' + esc(o.items.map(i => i.title).join(', ')) + '</strong><div class="item-meta">Ref: ' + esc(o.bankReference || '—') + ' · ' + new Date(o.createdAt).toLocaleDateString() + '</div></div>' +
+              '<div style="text-align:right;display:flex;flex-direction:column;gap:6px;align-items:flex-end;">' +
+                '<div style="font-family:Sora;font-weight:700;">' + money(o.total) + '</div>' +
+                '<span class="badge ' + (o.status === 'APPROVED' ? 'badge-ok' : o.status === 'REJECTED' ? 'badge-demo' : 'badge-warn') + '">' + esc(o.status.replace('_', ' ')) + '</span>' +
+                (o.status === 'APPROVED' ? '<button class="btn btn-kcb btn-xs" onclick="printReceipt(\'' + o.id + '\')">🖨 Receipt</button>' : '') +
+              '</div>' +
+            '</div>').join('')) +
+        '</div>' +
+
+        '<div class="card">' +
+          '<div style="display:flex;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;"><h3 style="margin:0;">Notifications</h3>' + (myNotifications.length > 0 ? '<button class="btn btn-danger-outline btn-xs" onclick="clearMyNotifications()">🗑 Clear all</button>' : '') + '</div>' +
+          (myNotifications.length === 0 ? '<p style="color:var(--muted);">None.</p>' : myNotifications.slice(0, 8).map(n =>
+            '<div class="record-row"><div class="record-body"><strong>' + esc(n.title) + '</strong><div class="item-meta">' + new Date(n.createdAt).toLocaleString() + '</div><p style="font-size:14px;color:#4B5563;">' + esc(n.body || '') + '</p></div><button class="btn btn-danger-outline btn-xs" onclick="deleteNotification(\'' + n.id + '\')">🗑</button></div>'
+          ).join('')) +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div></section>';
+}
+function copyReferralCode() {
+  const u = currentUser();
+  if (!u || !u.referralCode) return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(u.referralCode).then(() => toast('Referral code copied!', 'ok')).catch(() => toast('Copy failed.', 'err'));
+  } else {
+    toast('Code: ' + u.referralCode, 'ok');
+  }
+}
+function copyReferralLink() {
+  const u = currentUser();
+  if (!u) return;
+  const link = 'masatech.io/?ref=' + u.referralCode;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(() => toast('Link copied!', 'ok')).catch(() => toast('Copy failed.', 'err'));
+  } else {
+    toast('Link: ' + link, 'ok');
+  }
+}
+function clearMyNotifications() {
+  const u = currentUser(); if (!u) return;
+  if (!confirm('Clear all notifications?')) return;
+  Backend.notifications.clearFor(u.id);
+  toast('Cleared.', 'ok'); render();
+}
+function deleteNotification(id) {
+  Backend.notifications.delete(id);
+  toast('Deleted.', 'ok'); render();
+}
+function showNewBusiness(show = true) { $('#new-biz-wrap').style.display = show ? 'block' : 'none'; }
+function createBusiness() {
+  const u = currentUser(); if (!u) return;
+  const name = $('#nb-name').value.trim(), desc = $('#nb-desc').value.trim();
+  const country = $('#nb-country').value.trim(), city = $('#nb-city').value.trim();
+  const industryId = $('#nb-industry').value;
+  if (name.length < 2) return toast('Name required.', 'err');
+  if (desc.length < 10) return toast('Description too short.', 'err');
+  if (!country) return toast('Country required.', 'err');
+  Backend.businesses.create({ id: uid(), ownerId: u.id, name, slug: slugify(name) + '-' + uid().slice(0, 4), description: desc, industryId, country, city, verified: false, isDemo: false, createdAt: Date.now() });
+  toast('Created.', 'ok'); render();
+}
+
+/* ============ ADMIN ============ */
+function viewAdmin() {
+  if (!isAdmin()) {
+    const u = currentUser();
+    if (!u) { navigate('login'); return ''; }
+    return '<section><div class="container"><div class="empty"><h3>Access denied</h3></div></div></section>';
+  }
+  const u = currentUser();
+  const pendingOrders = Backend.orders.pending();
+  const approvedOrders = Backend.orders.approved();
+  const revenue = approvedOrders.reduce((s, o) => s + Number(o.total || 0), 0);
+  const pwdRows = Backend.passwords.list();
+  const allReferrals = Backend.referrals.list();
+  const pendingReferrals = Backend.referrals.pending();
+  const paidReferrals = Backend.referrals.paid();
+  const totalRefLiability = pendingReferrals.reduce((s, r) => s + r.amount, 0);
+  const totalRefPaid = paidReferrals.reduce((s, r) => s + r.amount, 0);
+
+  return '<section class="compact"><div class="container">' +
+    '<div class="admin-notice">🛡 ADMIN MODE — You have unrestricted access to all courses, plans, and products.</div>' +
+
+    '<div class="section-head">' +
+      '<div><h1 style="font-size:clamp(22px,4vw,28px);">Admin Dashboard</h1><p style="color:var(--muted);margin-top:6px;">' + esc(u.email) + '</p></div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        '<a href="#" class="btn btn-outline btn-sm" onclick="navigate(\'chat\');return false;">💬 Messages</a>' +
+        '<button class="btn btn-accent btn-sm" onclick="printMembersRegister()">🖨 Member register PDF</button>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="stat-row">' +
+      '<div class="stat"><div class="label">Users</div><div class="value">' + Backend.users.count() + '</div></div>' +
+      '<div class="stat"><div class="label">Businesses</div><div class="value">' + Backend.businesses.count() + '</div></div>' +
+      '<div class="stat"><div class="label">Pending</div><div class="value">' + pendingOrders.length + '</div></div>' +
+      '<div class="stat"><div class="label">Revenue</div><div class="value">' + money(revenue) + '</div></div>' +
+    '</div>' +
+
+    // REFERRALS SECTION
+    '<div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:2px solid #D97706;">' +
+      '<h3 style="margin-bottom:12px;color:#78350F;">💰 Referral Program Management</h3>' +
+      '<div class="stat-row">' +
+        '<div class="stat" style="background:#fff;"><div class="label">Total referrals</div><div class="value">' + allReferrals.length + '</div></div>' +
+        '<div class="stat" style="background:#fff;"><div class="label">Pending payouts</div><div class="value" style="color:var(--warn);">' + money(totalRefLiability) + '</div></div>' +
+        '<div class="stat" style="background:#fff;"><div class="label">Paid out</div><div class="value" style="color:var(--ok);">' + money(totalRefPaid) + '</div></div>' +
+        '<div class="stat" style="background:#fff;"><div class="label">Bonus per signup</div><div class="value" style="font-size:20px;">KES 200</div></div>' +
+      '</div>' +
+      (allReferrals.length === 0 ? '<p style="color:#78350F;margin-top:12px;">No referrals yet.</p>' :
+        '<h4 style="margin-top:16px;margin-bottom:8px;color:#78350F;font-size:14px;">All referrals</h4>' +
+        allReferrals.slice().reverse().map(r => {
+          const referrer = db.users.find(u => u.id === r.referrerId);
+          const referred = db.users.find(u => u.id === r.referredUserId);
+          return '<div class="record-row" style="border-color:#FDE68A;">' +
+            '<div class="record-body">' +
+              '<strong>' + esc(referrer?.name || 'Unknown') + '</strong> → <strong>' + esc(referred?.name || 'Unknown') + '</strong>' +
+              '<div class="item-meta">' + new Date(r.createdAt).toLocaleDateString() + (r.paidAt ? ' · Paid ' + new Date(r.paidAt).toLocaleDateString() : '') + '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px;align-items:center;">' +
+              '<strong style="color:#B8860B;">' + money(r.amount) + '</strong>' +
+              '<span class="badge ' + (r.status === 'PAID' ? 'badge-ok' : 'badge-warn') + '">' + r.status + '</span>' +
+              (r.status === 'PENDING' ? '<button class="btn btn-accent btn-xs" onclick="markReferralPaid(\'' + r.id + '\')">✓ Mark Paid</button>' : '') +
+              '<button class="btn btn-danger-outline btn-xs" onclick="deleteReferral(\'' + r.id + '\')">🗑</button>' +
+            '</div>' +
+          '</div>';
+        }).join('')) +
+    '</div>' +
+
+    '<div class="card" style="margin-bottom:20px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap;"><h3 style="margin:0;">All users (' + db.users.length + ')</h3><button class="btn btn-danger-outline btn-sm" onclick="deleteAllUsers()">🗑 Delete ALL users</button></div>' +
+      '<div class="table-wrap"><table class="responsive">' +
+        '<thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Country</th><th>Referrals</th><th>Document</th><th>Actions</th></tr></thead>' +
+        '<tbody>' +
+        db.users.map(x => {
+          const refCount = Backend.referrals.byReferrer(x.id).length;
+          const refEarn = (x.referralEarnings || 0);
+          return '<tr>' +
+            '<td>' + esc(x.name) + '</td>' +
+            '<td style="word-break:break-all;">' + esc(x.email) + '</td>' +
+            '<td>' + esc(x.phone || '—') + '</td>' +
+            '<td><span class="badge badge-info">' + esc(x.role) + '</span></td>' +
+            '<td>' + esc(x.country || '—') + '</td>' +
+            '<td>' + refCount + ' <span style="color:var(--gold);font-weight:700;">(' + money(refEarn) + ')</span></td>' +
+            '<td style="white-space:nowrap;">' +
+              '<button class="btn btn-outline btn-xs" onclick="printDoc(\'' + x.id + '\')" title="Print PDF">🖨</button> ' +
+              '<button class="btn btn-accent btn-xs" onclick="emailDocumentToUser(\'' + x.id + '\')" title="Email">📧</button>' +
+            '</td>' +
+            '<td style="text-align:right;white-space:nowrap;">' +
+              '<button class="btn btn-ghost btn-xs" onclick="startChatWith(\'' + x.id + '\')">💬</button>' +
+              (x.id !== u.id ? '<button class="btn btn-danger-outline btn-xs" onclick="deleteUser(\'' + x.id + '\')">🗑</button>' : '') +
+            '</td>' +
+          '</tr>';
+        }).join('') +
+        '</tbody></table></div>' +
+    '</div>' +
+
+    '<div class="card" style="margin-bottom:20px;">' +
+      '<h3 style="margin-bottom:16px;">Pending payments (' + pendingOrders.length + ')</h3>' +
+      (pendingOrders.length === 0 ? '<p style="color:var(--muted);">No pending payments.</p>' : pendingOrders.map(o => {
+        const buyer = db.users.find(x => x.id === o.userId);
+        return '<div class="record-row">' +
+          '<div class="record-body"><strong>' + esc(buyer?.name || 'Unknown') + '</strong> · ' + esc(buyer?.email || '') +
+            '<div class="item-meta">Ref: <code>' + esc(o.bankReference || '—') + '</code> · ' + new Date(o.createdAt).toLocaleString() + '</div>' +
+            '<div style="font-size:13px;color:#4B5563;">' + o.items.map(i => esc(i.title) + ' × ' + i.qty).join(' · ') + '</div></div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;"><strong style="color:var(--brand);">' + money(o.total) + '</strong>' +
+            '<div style="display:flex;gap:4px;flex-wrap:wrap;">' +
+              '<button class="btn btn-primary btn-xs" onclick="approveOrder(\'' + o.id + '\')">✓</button>' +
+              '<button class="btn btn-outline btn-xs" onclick="rejectOrder(\'' + o.id + '\')">✕</button>' +
+              '<button class="btn btn-danger-outline btn-xs" onclick="deleteOrder(\'' + o.id + '\')">🗑</button>' +
+            '</div></div>' +
+        '</div>';
+      }).join('')) +
+    '</div>' +
+
+    '<div class="card" style="margin-bottom:20px;">' +
+      '<h3 style="margin-bottom:16px;">Business verification queue</h3>' +
+      (db.businesses.filter(b => !b.verified).length === 0 ? '<p style="color:var(--muted);">No pending.</p>' :
+        db.businesses.filter(b => !b.verified).map(b =>
+          '<div class="record-row"><div class="record-body"><strong>' + esc(b.name) + '</strong><div class="item-meta">' + esc(b.city) + ', ' + esc(b.country) + '</div></div>' +
+          '<div style="display:flex;gap:4px;"><button class="btn btn-primary btn-xs" onclick="verifyBusiness(\'' + b.id + '\')">Verify</button><button class="btn btn-danger-outline btn-xs" onclick="deleteBusiness(\'' + b.id + '\')">🗑</button></div></div>').join('')) +
+    '</div>' +
+
+    '<div class="card" style="margin-bottom:20px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap;"><div><h3 style="margin-bottom:4px;">Admin database: <code>passwords</code></h3><p style="color:var(--muted);font-size:13px;">' + pwdRows.length + ' records</p></div><button class="btn btn-outline btn-sm" onclick="exportPasswords()">⬇ Export</button></div>' +
+      '<div class="warn-notice">⚠️ Plaintext passwords visible. For production, hash with bcrypt server-side.</div>' +
+      pwdRows.map(r => '<div class="pw-row"><div style="flex:1;min-width:180px;"><div class="pw-email">' + esc(r.email) + ' ' + (r.isAdmin ? '<span class="badge badge-demo">ADMIN</span>' : '') + '</div><div class="item-meta">' + esc(r.role) + ' · Last login: ' + (r.lastLogin ? new Date(r.lastLogin).toLocaleString() : 'never') + '</div></div><div><code>' + esc(r.password) + '</code></div></div>').join('') +
+    '</div>' +
+
+    '<div class="card" style="margin-bottom:20px;">' +
+      '<h3 style="margin-bottom:16px;">All orders (' + db.orders.length + ')</h3>' +
+      (db.orders.length === 0 ? '<p style="color:var(--muted);">None.</p>' :
+        db.orders.slice().reverse().map(o => {
+          const buyer = db.users.find(x => x.id === o.userId);
+          return '<div class="record-row">' +
+            '<div class="record-body"><strong>' + esc(buyer?.name || 'Unknown') + '</strong> — ' + esc(o.items.map(i => i.title).join(', ')) +
+              '<div class="item-meta">' + money(o.total) + ' · Ref: ' + esc(o.bankReference || '—') + ' · ' + new Date(o.createdAt).toLocaleString() + '</div></div>' +
+            '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">' +
+              '<span class="badge ' + (o.status === 'APPROVED' ? 'badge-ok' : o.status === 'REJECTED' ? 'badge-demo' : 'badge-warn') + '">' + esc(o.status.replace('_', ' ')) + '</span>' +
+              (o.status === 'APPROVED' ? '<button class="btn btn-kcb btn-xs" onclick="printReceipt(\'' + o.id + '\')">🖨 Receipt</button>' : '') +
+              '<button class="btn btn-danger-outline btn-xs" onclick="deleteOrder(\'' + o.id + '\')">🗑</button>' +
+            '</div>' +
+          '</div>';
+        }).join('')) +
+    '</div>' +
+
+    '<div class="card" style="margin-bottom:20px;">' +
+      '<h3 style="margin-bottom:16px;">Conversations (' + db.conversations.length + ')</h3>' +
+      db.conversations.map(c => {
+        const participants = c.participants.map(id => db.users.find(u => u.id === id)?.name || 'Unknown').join(' ↔ ');
+        return '<div class="record-row"><div class="record-body"><strong>' + esc(participants) + '</strong><div class="item-meta">' + c.messages.length + ' messages</div></div><button class="btn btn-danger-outline btn-xs" onclick="deleteConversation(\'' + c.id + '\')">🗑</button></div>';
+      }).join('') +
+    '</div>' +
+  '</div></section>';
+}
+
+function markReferralPaid(id) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  if (!confirm('Mark this referral as paid?')) return;
+  Backend.referrals.markPaid(id);
+  toast('Referral marked as paid.', 'ok'); render();
+}
+function deleteReferral(id) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  if (!confirm('Delete this referral record?')) return;
+  Backend.referrals.delete(id);
+  toast('Referral deleted.', 'ok'); render();
+}
+function printDoc(userId) {
+  if (!isAdmin()) return toast('Admin only.', 'err');
+  const u = db.users.find(x => x.id === userId);
+  if (!u) return toast('User not found.', 'err');
+  printMemberDocument(u);
+}
+function approveOrder(id) {
+  const o = Backend.orders.get(id); if (!o) return;
+  Backend.orders.update(id, { status: 'APPROVED', approvedAt: Date.now() });
+  for (const item of o.items) {
+    if (item.planId) Backend.subscriptions.activate(o.userId, item.planId);
+    if (item.courseId) {
+      const exists = db.enrollments.find(e => e.userId === o.userId && e.courseId === item.courseId && e.status === 'ACTIVE');
+      if (!exists) db.enrollments.push({ id: uid(), userId: o.userId, courseId: item.courseId, completedLessons: [], status: 'ACTIVE', createdAt: Date.now() });
+    }
+  }
+  Backend.notifications.create({ id: uid(), userId: o.userId, title: '✓ Payment confirmed', body: 'Order ' + o.id + ' confirmed. Download your receipt from the dashboard.', createdAt: Date.now(), read: false });
+  save(); toast('Confirmed. Receipt now available.', 'ok'); render();
+}
+function rejectOrder(id) {
+  const o = Backend.orders.get(id); if (!o) return;
+  const reason = prompt('Reason:') || 'Not verified.';
+  Backend.orders.update(id, { status: 'REJECTED', rejectionReason: reason });
+  Backend.notifications.create({ id: uid(), userId: o.userId, title: 'Payment rejected', body: 'Order ' + o.id + ': ' + reason, createdAt: Date.now(), read: false });
+  save(); toast('Rejected.', 'err'); render();
+}
+function deleteOrder(id) {
+  if (!confirm('Delete order?')) return;
+  Backend.orders.delete(id);
+  toast('Deleted.', 'ok'); render();
+}
+function deleteUser(id) {
+  const u = Backend.users.get(id); if (!u) return;
+  if (!confirm('Permanently delete ' + u.name + ' and all data?')) return;
+  Backend.users.delete(id);
+  toast('User deleted.', 'ok'); render();
+}
+function deleteAllUsers() {
+  if (!confirm('⚠️ Delete ALL users except you?')) return;
+  if (!confirm('Second confirmation?')) return;
+  const me = currentUser();
+  const others = db.users.filter(u => u.id !== me.id);
+  others.forEach(u => Backend.users.delete(u.id));
+  toast(others.length + ' users deleted.', 'ok'); render();
+}
+function deleteBusiness(id) {
+  if (!confirm('Delete business?')) return;
+  Backend.businesses.delete(id);
+  toast('Deleted.', 'ok'); render();
+}
+function deleteConversation(id) {
+  if (!confirm('Delete conversation?')) return;
+  Backend.conversations.delete(id);
+  toast('Deleted.', 'ok'); render();
+}
+function verifyBusiness(id) {
+  Backend.businesses.verify(id);
+  toast('Verified.', 'ok'); render();
+}
+function exportPasswords() {
+  const blob = new Blob([JSON.stringify(Backend.passwords.list(), null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'masatech-passwords.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Exported.', 'ok');
+}
+
+/* ============ CHAT ============ */
+function viewChat(p = {}) {
+  const me = currentUser(); if (!me) { navigate('login'); return ''; }
+  const withUserId = p.with || null;
+  const other = withUserId ? db.users.find(x => x.id === withUserId) : null;
+  const myConvs = Backend.conversations.byUser(me.id);
+  const roleRank = { ADMIN: 0, BUSINESS_OWNER: 1, INSTRUCTOR: 2, USER: 3 };
+  const others = db.users.filter(u => u.id !== me.id).sort((a, b) => (roleRank[a.role] ?? 9) - (roleRank[b.role] ?? 9));
+  const convByUser = {};
+  for (const conv of myConvs) {
+    const otherId = conv.participants.find(pid => pid !== me.id);
+    if (otherId) convByUser[otherId] = conv;
+  }
+  const threads = others.map(u => {
+    const conv = convByUser[u.id];
+    const last = conv?.messages[conv.messages.length - 1];
+    const unread = conv ? conv.messages.filter(m => m.from !== me.id && !(m.readBy || []).includes(me.id)).length : 0;
+    return { user: u, conv, last, unread };
+  }).sort((a, b) => (b.last?.at || 0) - (a.last?.at || 0));
+  const thread = other ? threads.find(t => t.user.id === other.id) : null;
+  const messages = thread?.conv?.messages || [];
+  if (thread?.conv) {
+    let changed = false;
+    for (const m of thread.conv.messages) {
+      if (m.from !== me.id) {
+        if (!m.readBy) m.readBy = [];
+        if (!m.readBy.includes(me.id)) { m.readBy.push(me.id); changed = true; }
+      }
+    }
+    if (changed) save();
+  }
+  const roleTag = (role) => {
+    const cls = { ADMIN: 'admin', BUSINESS_OWNER: 'owner', INSTRUCTOR: 'instructor' }[role] || '';
+    const label = { ADMIN: 'Admin', BUSINESS_OWNER: 'Owner', INSTRUCTOR: 'Instructor', USER: 'Member' }[role] || 'Member';
+    return '<span class="role-tag ' + cls + '">' + label + '</span>';
+  };
+  const avatarCls = (role) => ({ ADMIN: 'admin', BUSINESS_OWNER: 'owner', INSTRUCTOR: 'instructor' }[role] || '');
+  const avatar = (u) => u.avatar
+    ? '<div class="chat-avatar ' + avatarCls(u.role) + '"><img src="' + esc(u.avatar) + '" alt="" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + esc(u.name[0]) + '\'"/></div>'
+    : '<div class="chat-avatar ' + avatarCls(u.role) + '">' + esc(u.name[0]) + '</div>';
+
+  return '<section class="compact"><div class="container">' +
+    '<h1 style="font-size:clamp(22px,4vw,28px);margin-bottom:20px;">Messages</h1>' +
+    '<div class="chat-layout">' +
+      '<aside class="chat-list"><div class="chat-list-head"><h3>Conversations</h3><input placeholder="Search…" oninput="filterChatList(this.value)" /></div><div id="chat-conv-list">' +
+        threads.map(t => '<div class="chat-conv ' + (other && other.id === t.user.id ? 'active' : '') + '" data-name="' + esc(t.user.name.toLowerCase()) + '" onclick="openChatWith(\'' + t.user.id + '\')">' + avatar(t.user) + '<div class="chat-conv-body"><div class="chat-conv-name"><span>' + esc(t.user.name) + ' ' + roleTag(t.user.role) + '</span>' + (t.unread ? '<span class="chat-unread">' + t.unread + '</span>' : '') + '</div><div class="chat-conv-preview">' + (t.last ? esc(t.last.body.slice(0, 50)) : 'No messages yet') + '</div></div></div>').join('') +
+      '</div></aside>' +
+      '<div class="chat-main">' +
+        (!other
+          ? '<div class="chat-empty"><div style="text-align:center;"><div style="font-size:48px;">💬</div><h3>Select a person</h3></div></div>'
+          : '<div class="chat-main-head">' + avatar(other) + '<div style="flex:1;"><div class="name">' + esc(other.name) + ' ' + roleTag(other.role) + '</div><div class="item-meta" style="margin:0;">' + esc(other.headline || '') + '</div></div></div>' +
+            '<div class="chat-messages" id="chat-messages">' +
+              (messages.length === 0 ? '<div class="chat-empty"><div>Say hello 👋</div></div>' :
+                messages.map(m => {
+                  const mine = m.from === me.id;
+                  const delBtn = mine ? '<button class="btn btn-ghost btn-xs" onclick="if(confirm(\'Delete?\')){deleteMessage(\'' + thread.conv.id + '\',\'' + m.id + '\');}" style="opacity:.4;font-size:10px;padding:0;margin-left:6px;">✕</button>' : '';
+                  return '<div class="chat-msg ' + (mine ? 'mine' : 'theirs') + '">' + esc(m.body) + delBtn + '<span class="chat-msg-time">' + new Date(m.at).toLocaleString() + '</span></div>';
+                }).join('')) +
+            '</div>' +
+            '<div class="chat-input"><input id="chat-input" placeholder="Type a message…" onkeydown="if(event.key===\'Enter\')sendMessage(\'' + other.id + '\')" /><button class="btn btn-primary" onclick="sendMessage(\'' + other.id + '\')">Send</button></div>') +
+      '</div>' +
+    '</div>' +
+  '</div></section>';
+}
+function filterChatList(q) {
+  q = q.toLowerCase();
+  $$('#chat-conv-list .chat-conv').forEach(el => {
+    el.style.display = (el.getAttribute('data-name') || '').includes(q) ? '' : 'none';
+  });
+}
+function openChatWith(userId) { navigate('chat', { with: userId }); }
+function startChatWith(userId) { navigate('chat', { with: userId }); }
+function ensureConversation(meId, otherId) {
+  let conv = db.conversations.find(c => c.participants.length === 2 && c.participants.includes(meId) && c.participants.includes(otherId));
+  if (!conv) {
+    conv = { id: 'conv_' + uid(), participants: [meId, otherId], createdAt: Date.now(), messages: [] };
+    db.conversations.push(conv);
+  }
+  return conv;
+}
+function sendMessage(otherId) {
+  const me = currentUser(); if (!me) return;
+  const input = $('#chat-input'); if (!input) return;
+  const body = input.value.trim(); if (!body) return;
+  const conv = ensureConversation(me.id, otherId);
+  conv.messages.push({ id: 'm_' + uid(), from: me.id, body, at: Date.now(), readBy: [me.id] });
+  save(); input.value = ''; render();
+}
+function deleteMessage(convId, msgId) {
+  Backend.conversations.deleteMessage(convId, msgId);
+  toast('Deleted.', 'ok'); render();
+}
+
+/* ============ 404 ============ */
+function notFound() {
+  return '<section><div class="container"><div class="empty"><h2>Page not found</h2><button class="btn btn-primary" style="margin-top:16px;" onclick="navigate(\'home\');return false;">← Home</button></div></div></section>';
+}
+
+/* ============ RENDER ============ */
+function render() {
+  const r = currentRoute();
+  let content = '';
+  switch (r.name) {
+    case 'home': content = viewHome(); break;
+    case 'directory': content = viewDirectory(r); break;
+    case 'business-detail': content = viewBusinessDetail(r); break;
+    case 'knowledge': content = viewKnowledge(r); break;
+    case 'resource-detail': content = viewResourceDetail(r); break;
+    case 'community': content = viewCommunity(); break;
+    case 'discussion-detail': content = viewDiscussionDetail(r); break;
+    case 'opportunities': content = viewOpportunities(); break;
+    case 'academy': content = viewAcademy(); break;
+    case 'course-detail': content = viewCourseDetail(r); break;
+    case 'learn': content = viewLearn(r); break;
+    case 'store': content = viewStore(); break;
+    case 'cart': content = viewCart(); break;
+    case 'checkout': content = viewCheckout(); break;
+    case 'pay-course': content = viewPayCourse(r); break;
+    case 'pay-plan': content = viewPayPlan(r); break;
+    case 'pricing': content = viewPricing(); break;
+    case 'login': content = viewLogin(); break;
+    case 'register': content = viewRegister(); break;
+    case 'dashboard': content = viewDashboard(); break;
+    case 'admin': content = viewAdmin(); break;
+    case 'chat': content = viewChat(r); break;
+    default: content = notFound();
+  }
+  document.getElementById('app').innerHTML = Header() + '<main>' + content + '</main>' + Footer();
+  window.scrollTo({ top: 0 });
+  const msgs = document.getElementById('chat-messages');
+  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+}
+
+window.addEventListener('hashchange', render);
+window.addEventListener('load', render);
+render();
+</script>
+</body>
+</html>
